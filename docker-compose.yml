@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  spmi-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spmi-unpal-app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SUPABASE_URL=https://nuqlneeiloedqklrwlgo.supabase.co
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51cWxuZWVpbG9lZHFrbHJ3bGdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczNjYyNTMsImV4cCI6MjEwMjk0MjI1M30.DCyCLQ3RLKiMdbDT0OGbrNFua81_XJldvEU2fxXeLQg
+      - SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51cWxuZWVpbG9lZHFrbHJ3bGdvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NzM2NjI1MywiZXhwIjoyMTAyOTQyMjUzfQ.XAh7lnFJOa-KXe-ZuXZ4F96d25GXvJ31TMj9B5sEdMU
+      - DATABASE_URL=postgresql://postgres.nuqlneeiloedqklrwlgo:rfFHsDoDsYvnEWSf@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
+    env_file:
+      - .env.local

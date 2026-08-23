@@ -1,0 +1,963 @@
+import { createClient } from '@supabase/supabase-js';
+import { 
+  initialAccreditations, 
+  initialDocuments, 
+  initialMonitoringData, 
+  initialRegulations, 
+  initialMessages,
+  initialOrgMembers,
+  initialAboutContent,
+  initialHomeContent,
+  initialContactContent,
+  initialAdminUsers,
+  initialDocumentAccessKeys
+} from './mock-data';
+import { 
+  Accreditation, 
+  SpmiDocument, 
+  DocumentAccessKey,
+  MonitoringData, 
+  Regulation, 
+  ContactMessage,
+  OrganizationMember,
+  AboutPageContent,
+  HomePageContent,
+  ContactPageContent,
+  AdminUser
+} from './types';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+export const isSupabaseConfigured = Boolean(
+  supabaseUrl && 
+  supabaseAnonKey && 
+  supabaseUrl !== 'https://your-project.supabase.co' &&
+  !supabaseUrl.includes('placeholder')
+);
+
+export const supabase = isSupabaseConfigured
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
+
+// Local storage keys for persisting mock edits if Supabase is not connected
+const STORAGE_KEYS = {
+  ACCREDITATIONS: 'spmi_accreditations_data',
+  DOCUMENTS: 'spmi_documents_data',
+  DOCUMENT_ACCESS_KEYS: 'spmi_document_access_keys_data',
+  MONITORING: 'spmi_monitoring_data',
+  REGULATIONS: 'spmi_regulations_data',
+  MESSAGES: 'spmi_messages_data',
+  ORG_MEMBERS: 'spmi_org_members_data',
+  CONTENT_ABOUT: 'spmi_content_about',
+  CONTENT_HOME: 'spmi_content_home',
+  CONTENT_CONTACT: 'spmi_content_contact',
+  USERS: 'spmi_admin_users_data',
+  AUTH_SESSION: 'spmi_admin_auth_user',
+};
+
+// Data service helpers with automatic fallback to mock/local persistence
+export const dataService = {
+  // ==========================================
+  // 1. ACCREDITATIONS (AKREDITASI)
+  // ==========================================
+  async getAccreditations(): Promise<Accreditation[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase.from('accreditations').select('*').order('level');
+        if (!error && data && data.length > 0) return data;
+      } catch (e) {
+        console.warn('Supabase fetch failed, falling back to local data', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem(STORAGE_KEYS.ACCREDITATIONS);
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch {
+          // parse error
+        }
+      }
+    }
+    return initialAccreditations;
+  },
+
+  async saveAccreditation(item: Accreditation): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('accreditations').upsert(item);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase save error', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const items = await this.getAccreditations();
+      const index = items.findIndex(i => i.id === item.id);
+      let updated: Accreditation[];
+      if (index >= 0) {
+        updated = [...items];
+        updated[index] = item;
+      } else {
+        updated = [item, ...items];
+      }
+      localStorage.setItem(STORAGE_KEYS.ACCREDITATIONS, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  async deleteAccreditation(id: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('accreditations').delete().eq('id', id);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase delete error', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const items = await this.getAccreditations();
+      const updated = items.filter(i => i.id !== id);
+      localStorage.setItem(STORAGE_KEYS.ACCREDITATIONS, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  // ==========================================
+  // 2. DOCUMENTS (DOKUMEN SPMI)
+  // ==========================================
+  async getDocuments(): Promise<SpmiDocument[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase.from('documents').select('*').order('year', { ascending: false });
+        if (!error && data && data.length > 0) return data;
+      } catch (e) {
+        console.warn('Supabase fetch failed, falling back to local data', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem(STORAGE_KEYS.DOCUMENTS);
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch {
+          // parse error
+        }
+      }
+    }
+    return initialDocuments;
+  },
+
+  async saveDocument(item: SpmiDocument): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('documents').upsert(item);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase save error', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const items = await this.getDocuments();
+      const index = items.findIndex(i => i.id === item.id);
+      let updated: SpmiDocument[];
+      if (index >= 0) {
+        updated = [...items];
+        updated[index] = item;
+      } else {
+        updated = [item, ...items];
+      }
+      localStorage.setItem(STORAGE_KEYS.DOCUMENTS, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  async deleteDocument(id: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('documents').delete().eq('id', id);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase delete error', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const items = await this.getDocuments();
+      const updated = items.filter(i => i.id !== id);
+      localStorage.setItem(STORAGE_KEYS.DOCUMENTS, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  // ==========================================
+  // 2B. DOCUMENT ACCESS KEYS (KODE AKSES DOKUMEN SPMI)
+  // ==========================================
+  async getDocumentAccessKeys(): Promise<DocumentAccessKey[]> {
+    let supabaseKeys: DocumentAccessKey[] = [];
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase.from('document_access_keys').select('*').order('created_at', { ascending: false });
+        if (!error && data) {
+          supabaseKeys = data;
+        }
+      } catch (e) {
+        console.warn('Supabase fetch access keys failed', e);
+      }
+    }
+
+    let localKeys: DocumentAccessKey[] = [];
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem(STORAGE_KEYS.DOCUMENT_ACCESS_KEYS);
+      if (cached) {
+        try {
+          localKeys = JSON.parse(cached);
+        } catch {
+          // parse error
+        }
+      }
+    }
+
+    // Merge supabase and local keys, avoiding duplicate IDs/codes
+    const keyMap = new Map<string, DocumentAccessKey>();
+    
+    // Seed initial keys first
+    initialDocumentAccessKeys.forEach(k => keyMap.set(k.code.toUpperCase(), k));
+    
+    // Override with local storage keys
+    localKeys.forEach(k => keyMap.set(k.code.toUpperCase(), k));
+    
+    // Override with Supabase live keys
+    supabaseKeys.forEach(k => keyMap.set(k.code.toUpperCase(), k));
+
+    const merged = Array.from(keyMap.values()).sort(
+      (a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+    );
+
+    return merged;
+  },
+
+  async saveDocumentAccessKey(item: DocumentAccessKey): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('document_access_keys').upsert(item);
+      } catch (e) {
+        console.warn('Supabase save access key error', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const items = await this.getDocumentAccessKeys();
+      const idx = items.findIndex(i => i.id === item.id || i.code.toUpperCase() === item.code.toUpperCase());
+      let updated: DocumentAccessKey[];
+      if (idx >= 0) {
+        updated = items.map((i, index) => index === idx ? item : i);
+      } else {
+        updated = [item, ...items];
+      }
+      localStorage.setItem(STORAGE_KEYS.DOCUMENT_ACCESS_KEYS, JSON.stringify(updated));
+      return true;
+    }
+    return true;
+  },
+
+  async deleteDocumentAccessKey(id: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('document_access_keys').delete().eq('id', id);
+      } catch (e) {
+        console.warn('Supabase delete access key error', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const items = await this.getDocumentAccessKeys();
+      const updated = items.filter(i => i.id !== id);
+      localStorage.setItem(STORAGE_KEYS.DOCUMENT_ACCESS_KEYS, JSON.stringify(updated));
+      return true;
+    }
+    return true;
+  },
+
+  async toggleDocumentAccessKey(id: string, is_active: boolean): Promise<boolean> {
+    const items = await this.getDocumentAccessKeys();
+    const target = items.find(i => i.id === id);
+    if (!target) return false;
+    target.is_active = is_active;
+    return this.saveDocumentAccessKey(target);
+  },
+
+  async validateDocumentAccess(codeOrToken: string): Promise<{ valid: boolean; message?: string; key?: DocumentAccessKey }> {
+    if (!codeOrToken || !codeOrToken.trim()) {
+      return { valid: false, message: 'Silakan masukkan kode akses.' };
+    }
+
+    // Clean and normalize input
+    let cleanCode = codeOrToken.trim().toUpperCase();
+    // If user pasted a full URL by accident, extract access param
+    if (cleanCode.includes('ACCESS=') || cleanCode.includes('TOKEN=') || cleanCode.includes('CODE=')) {
+      const match = cleanCode.match(/(?:ACCESS|TOKEN|CODE)=([^&]+)/i);
+      if (match && match[1]) {
+        cleanCode = decodeURIComponent(match[1]).trim().toUpperCase();
+      }
+    }
+
+    // Remove any spaces around hyphens or inner double spaces
+    const normalizedInput = cleanCode.replace(/\s+/g, '').replace(/[-_]/g, '');
+
+    const keys = await this.getDocumentAccessKeys();
+    
+    // Match exact code or normalized code without hyphens/prefix
+    const found = keys.find(k => {
+      const kCode = k.code.trim().toUpperCase();
+      const normalizedKCode = kCode.replace(/\s+/g, '').replace(/[-_]/g, '');
+      return (
+        kCode === cleanCode ||
+        normalizedKCode === normalizedInput ||
+        `SPMI${normalizedInput}` === normalizedKCode ||
+        normalizedInput === normalizedKCode.replace(/^SPMI/, '')
+      );
+    });
+
+    if (!found) {
+      return { valid: false, message: 'Kode atau tautan akses tidak valid atau tidak ditemukan.' };
+    }
+
+    if (!found.is_active) {
+      return { valid: false, message: 'Akses ini telah dinonaktifkan oleh administrator.' };
+    }
+
+    if (found.expires_at) {
+      const expiry = new Date(found.expires_at).getTime();
+      const now = Date.now();
+      if (now > expiry) {
+        return { valid: false, message: 'Masa berlaku kode akses ini telah kedaluwarsa.' };
+      }
+    }
+
+    if (found.max_uses && found.used_count >= found.max_uses) {
+      return { valid: false, message: 'Batas kuota penggunaan kode akses ini telah habis.' };
+    }
+
+    // Increment used count
+    const updatedKey: DocumentAccessKey = {
+      ...found,
+      used_count: (found.used_count || 0) + 1
+    };
+    await this.saveDocumentAccessKey(updatedKey);
+
+    return { valid: true, key: updatedKey };
+  },
+
+  // ==========================================
+  // 3. MONITORING DATA (PEMANTAUAN SPMI)
+  // ==========================================
+  async getMonitoringData(): Promise<MonitoringData[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase.from('monitoring_data').select('*');
+        if (!error && data && data.length > 0) return data;
+      } catch (e) {
+        console.warn('Supabase fetch failed, falling back to local data', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem(STORAGE_KEYS.MONITORING);
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch {
+          // parse error
+        }
+      }
+    }
+    return initialMonitoringData;
+  },
+
+  async saveMonitoringData(item: MonitoringData): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('monitoring_data').upsert(item);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase save error', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const items = await this.getMonitoringData();
+      const index = items.findIndex(i => i.id === item.id);
+      let updated: MonitoringData[];
+      if (index >= 0) {
+        updated = [...items];
+        updated[index] = item;
+      } else {
+        updated = [item, ...items];
+      }
+      localStorage.setItem(STORAGE_KEYS.MONITORING, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  async deleteMonitoringData(id: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('monitoring_data').delete().eq('id', id);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase delete error', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const items = await this.getMonitoringData();
+      const updated = items.filter(i => i.id !== id);
+      localStorage.setItem(STORAGE_KEYS.MONITORING, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  // ==========================================
+  // 4. REGULATIONS (PERATURAN & REGULASI)
+  // ==========================================
+  async getRegulations(): Promise<Regulation[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase.from('regulations').select('*').order('year', { ascending: false });
+        if (!error && data && data.length > 0) return data;
+      } catch (e) {
+        console.warn('Supabase fetch failed, falling back to local data', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem(STORAGE_KEYS.REGULATIONS);
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch {
+          // parse error
+        }
+      }
+    }
+    return initialRegulations;
+  },
+
+  async saveRegulation(item: Regulation): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('regulations').upsert(item);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase save error', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const items = await this.getRegulations();
+      const index = items.findIndex(i => i.id === item.id);
+      let updated: Regulation[];
+      if (index >= 0) {
+        updated = [...items];
+        updated[index] = item;
+      } else {
+        updated = [item, ...items];
+      }
+      localStorage.setItem(STORAGE_KEYS.REGULATIONS, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  async deleteRegulation(id: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('regulations').delete().eq('id', id);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase delete error', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const items = await this.getRegulations();
+      const updated = items.filter(i => i.id !== id);
+      localStorage.setItem(STORAGE_KEYS.REGULATIONS, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  // ==========================================
+  // 5. CONTACT MESSAGES (KOTAK MASUK PESAN)
+  // ==========================================
+  async getMessages(): Promise<ContactMessage[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase.from('contact_messages').select('*').order('created_at', { ascending: false });
+        if (!error && data && data.length > 0) return data;
+      } catch (e) {
+        console.warn('Supabase fetch failed, falling back to local data', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem(STORAGE_KEYS.MESSAGES);
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch {
+          // parse error
+        }
+      }
+    }
+    return initialMessages;
+  },
+
+  async sendMessage(msg: Omit<ContactMessage, 'id' | 'created_at' | 'status'>): Promise<ContactMessage> {
+    const newMsg: ContactMessage = {
+      ...msg,
+      id: `msg-${Date.now()}`,
+      created_at: new Date().toISOString().replace('T', ' ').substring(0, 16),
+      status: 'Baru'
+    };
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('contact_messages').insert(newMsg);
+      } catch (e) {
+        console.warn('Supabase insert message error', e);
+      }
+    }
+
+    if (typeof window !== 'undefined') {
+      const msgs = await this.getMessages();
+      const updated = [newMsg, ...msgs];
+      localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(updated));
+    }
+
+    return newMsg;
+  },
+
+  async updateMessageStatus(id: string, status: 'Baru' | 'Diproses' | 'Selesai', reply_note?: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('contact_messages').update({ status, reply_note }).eq('id', id);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase update message error', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const msgs = await this.getMessages();
+      const updated = msgs.map(m => m.id === id ? { ...m, status, reply_note: reply_note !== undefined ? reply_note : m.reply_note } : m);
+      localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  async deleteMessage(id: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('contact_messages').delete().eq('id', id);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase delete error', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const msgs = await this.getMessages();
+      const updated = msgs.filter(m => m.id !== id);
+      localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  // ==========================================
+  // 6. FILE STORAGE / UPLOAD HELPER
+  // ==========================================
+  async uploadFile(file: File, folder: 'documents' | 'accreditations' | 'regulations' = 'documents'): Promise<{ url: string; size: string; name: string } | null> {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', folder);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success && result.url) {
+          return {
+            url: result.url,
+            size: result.size,
+            name: result.fileName || file.name,
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('API route upload failed, checking fallbacks', e);
+    }
+
+    const fileSizeStr = `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+    const cleanFileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const filePath = `${folder}/${cleanFileName}`;
+        const { data, error } = await supabase.storage.from('spmi-files').upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+        if (!error && data) {
+          const { data: publicUrlData } = supabase.storage.from('spmi-files').getPublicUrl(filePath);
+          return {
+            url: publicUrlData.publicUrl,
+            size: fileSizeStr,
+            name: file.name
+          };
+        }
+      } catch (e) {
+        console.warn('Supabase storage upload failed, creating object url', e);
+      }
+    }
+
+    // Local / offline fallback: Create object URL
+    const objectUrl = URL.createObjectURL(file);
+    return {
+      url: objectUrl,
+      size: fileSizeStr,
+      name: file.name
+    };
+  },
+
+  // ==========================================
+  // 7. CONTENT MANAGEMENT (CMS)
+  // ==========================================
+  async getAboutContent(): Promise<AboutPageContent> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase.from('page_contents').select('*').eq('slug', 'about').single();
+        if (!error && data?.content) return data.content as AboutPageContent;
+      } catch (e) {
+        console.warn('Supabase fetch failed for about content', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem(STORAGE_KEYS.CONTENT_ABOUT);
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch {}
+      }
+    }
+    return initialAboutContent;
+  },
+
+  async saveAboutContent(content: AboutPageContent): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('page_contents').upsert({
+          slug: 'about',
+          title: 'Tentang Kami',
+          content,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'slug' });
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase save error for about content', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEYS.CONTENT_ABOUT, JSON.stringify(content));
+      return true;
+    }
+    return false;
+  },
+
+  async getHomeContent(): Promise<HomePageContent> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase.from('page_contents').select('*').eq('slug', 'home').single();
+        if (!error && data?.content) return data.content as HomePageContent;
+      } catch (e) {
+        console.warn('Supabase fetch failed for home content', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem(STORAGE_KEYS.CONTENT_HOME);
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch {}
+      }
+    }
+    return initialHomeContent;
+  },
+
+  async saveHomeContent(content: HomePageContent): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('page_contents').upsert({
+          slug: 'home',
+          title: 'Halaman Beranda',
+          content,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'slug' });
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase save error for home content', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEYS.CONTENT_HOME, JSON.stringify(content));
+      return true;
+    }
+    return false;
+  },
+
+  async getContactContent(): Promise<ContactPageContent> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase.from('page_contents').select('*').eq('slug', 'contact').single();
+        if (!error && data?.content) return data.content as ContactPageContent;
+      } catch (e) {
+        console.warn('Supabase fetch failed for contact content', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem(STORAGE_KEYS.CONTENT_CONTACT);
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch {}
+      }
+    }
+    return initialContactContent;
+  },
+
+  async saveContactContent(content: ContactPageContent): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('page_contents').upsert({
+          slug: 'contact',
+          title: 'Kontak & Informasi',
+          content,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'slug' });
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase save error for contact content', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEYS.CONTENT_CONTACT, JSON.stringify(content));
+      return true;
+    }
+    return false;
+  },
+
+  // ==========================================
+  // 8. ORGANIZATION MEMBERS (STRUKTUR ORGANISASI)
+  // ==========================================
+  async getOrgMembers(): Promise<OrganizationMember[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase.from('org_members').select('*').order('order');
+        if (!error && data && data.length > 0) return data;
+      } catch (e) {
+        console.warn('Supabase fetch failed for org members', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem(STORAGE_KEYS.ORG_MEMBERS);
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch {}
+      }
+    }
+    return initialOrgMembers;
+  },
+
+  async saveOrgMember(member: OrganizationMember): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('org_members').upsert(member);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase save error for org member', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const items = await this.getOrgMembers();
+      const index = items.findIndex(i => i.id === member.id);
+      let updated: OrganizationMember[];
+      if (index >= 0) {
+        updated = [...items];
+        updated[index] = member;
+      } else {
+        updated = [...items, member];
+      }
+      updated.sort((a, b) => a.order - b.order);
+      localStorage.setItem(STORAGE_KEYS.ORG_MEMBERS, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  async deleteOrgMember(id: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('org_members').delete().eq('id', id);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase delete error for org member', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const items = await this.getOrgMembers();
+      const updated = items.filter(i => i.id !== id);
+      localStorage.setItem(STORAGE_KEYS.ORG_MEMBERS, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  // ==========================================
+  // 9. ADMIN USERS & AUTHENTICATION
+  // ==========================================
+  async getUsers(): Promise<AdminUser[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase.from('admin_users').select('*').order('created_at', { ascending: true });
+        if (!error && data && data.length > 0) return data as AdminUser[];
+      } catch (e) {
+        console.warn('Supabase fetch error for users', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(STORAGE_KEYS.USERS);
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch {
+          // ignore error
+        }
+      }
+      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(initialAdminUsers));
+    }
+    return initialAdminUsers;
+  },
+
+  async getUserById(id: string): Promise<AdminUser | null> {
+    const users = await this.getUsers();
+    return users.find(u => u.id === id) || null;
+  },
+
+  async saveUser(user: AdminUser): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('admin_users').upsert(user);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase save error for user', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const users = await this.getUsers();
+      const index = users.findIndex(u => u.id === user.id);
+      let updated: AdminUser[];
+      if (index >= 0) {
+        updated = [...users];
+        updated[index] = { ...users[index], ...user };
+      } else {
+        updated = [...users, user];
+      }
+      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  async deleteUser(id: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('admin_users').delete().eq('id', id);
+        if (!error) return true;
+      } catch (e) {
+        console.warn('Supabase delete error for user', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const users = await this.getUsers();
+      const updated = users.filter(u => u.id !== id);
+      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  },
+
+  async authenticate(email: string, password?: string): Promise<AdminUser | null> {
+    const users = await this.getUsers();
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase().trim());
+    if (!user) return null;
+    if (!user.is_active) return null;
+    if (password && user.password && user.password !== password) return null;
+
+    // Update last_login
+    const now = new Date();
+    const formatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const updatedUser = { ...user, last_login: formatted };
+    await this.saveUser(updatedUser);
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(updatedUser));
+      localStorage.setItem('spmi_admin_auth', JSON.stringify({ email: updatedUser.email, role: updatedUser.role, name: updatedUser.name, loggedAt: Date.now() }));
+    }
+    return updatedUser;
+  },
+
+  getCurrentUser(): AdminUser | null {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(STORAGE_KEYS.AUTH_SESSION);
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch {
+          // ignore
+        }
+      }
+    }
+    return initialAdminUsers[0]; // fallback to superadmin
+  },
+
+  logoutUser() {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEYS.AUTH_SESSION);
+      localStorage.removeItem('spmi_admin_auth');
+    }
+  },
+
+  // ==========================================
+  // 10. RESET TO DEFAULT SEED DATA
+  // ==========================================
+  resetLocalData() {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEYS.ACCREDITATIONS);
+      localStorage.removeItem(STORAGE_KEYS.DOCUMENTS);
+      localStorage.removeItem(STORAGE_KEYS.MONITORING);
+      localStorage.removeItem(STORAGE_KEYS.REGULATIONS);
+      localStorage.removeItem(STORAGE_KEYS.MESSAGES);
+      localStorage.removeItem(STORAGE_KEYS.ORG_MEMBERS);
+      localStorage.removeItem(STORAGE_KEYS.CONTENT_ABOUT);
+      localStorage.removeItem(STORAGE_KEYS.CONTENT_HOME);
+      localStorage.removeItem(STORAGE_KEYS.CONTENT_CONTACT);
+      localStorage.removeItem(STORAGE_KEYS.USERS);
+      localStorage.removeItem(STORAGE_KEYS.AUTH_SESSION);
+    }
+  }
+};
