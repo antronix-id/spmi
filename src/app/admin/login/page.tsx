@@ -11,7 +11,9 @@ import {
   ArrowLeft,
   ShieldCheck,
   CheckCircle2,
-  Users
+  Users,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -25,6 +27,7 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -115,15 +118,28 @@ export default function AdminLoginPage() {
               <div className="space-y-1.5">
                 <label className="text-xs font-black text-slate-800">Kata Sandi</label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                   <Input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
                     placeholder="••••••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 h-11 bg-white border-2 border-slate-900 text-slate-900 placeholder-slate-400 rounded-xl text-xs font-bold focus:ring-1 focus:ring-black"
+                    className="pl-10 pr-10 h-11 bg-white border-2 border-slate-900 text-slate-900 placeholder-slate-400 rounded-xl text-xs font-bold focus:ring-1 focus:ring-black"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors p-0.5 rounded cursor-pointer focus:outline-none"
+                    title={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
                 </div>
               </div>
 

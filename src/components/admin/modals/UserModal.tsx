@@ -25,6 +25,7 @@ import {
   Square,
   Zap,
   Eye,
+  EyeOff,
   FileText,
   Search,
   RotateCcw
@@ -67,6 +68,7 @@ export function UserModal({
   const [permissions, setPermissions] = useState<UserPermissions>(getDefaultPermissions('admin_spmi'));
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     setActiveTab('profile');
@@ -313,14 +315,23 @@ export function UserModal({
                     Kata Sandi {user ? '(Kosongkan jika tidak diubah)' : '*'} (Unik)
                   </Label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+                    <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" />
                     <Input
-                      type="password"
+                      type={showPassword ? 'text' : 'password'}
                       placeholder={user ? '••••••••' : 'Minimal 6 karakter unik'}
                       value={formData.password || ''}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="pl-9 bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus-visible:ring-zinc-700 text-xs h-9"
+                      className="pl-9 pr-9 bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus-visible:ring-zinc-700 text-xs h-9"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors p-1 rounded-md cursor-pointer focus:outline-none"
+                      title={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    </button>
                   </div>
                   <p className="text-[10px] text-zinc-500 font-mono">Kata sandi tidak boleh sama dengan akun lain</p>
                 </div>
