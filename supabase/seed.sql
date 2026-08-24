@@ -111,7 +111,6 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- Seed accreditations (Institusi + 6 S1 Program Studi)
-DELETE FROM accreditations;
 INSERT INTO accreditations (id, institution_or_program, level, faculty, rating, sk_number, expiry_date, status, accreditation_agency, certificate_url)
 VALUES
 ('acc-inst-1', 'Universitas Palembang', 'Institusi', NULL, 'Baik Sekali', '124/SK/BAN-PT/Akred/PT/III/2023', '2028-03-24', 'Aktif', 'BAN-PT', '#'),
@@ -120,10 +119,10 @@ VALUES
 ('acc-prodi-3', 'S1 Teknik Elektro', 'S1', 'Fakultas Teknik', 'Baik', '095/SK/LAM-TEKNIK/Akred/S/II/2024', '2029-02-28', 'Aktif', 'LAM-TEKNIK', '#'),
 ('acc-prodi-4', 'S1 Teknik Sipil', 'S1', 'Fakultas Teknik', 'Baik Sekali', '118/SK/LAM-TEKNIK/Akred/S/XI/2023', '2028-11-14', 'Aktif', 'LAM-TEKNIK', '#'),
 ('acc-prodi-5', 'S1 Ilmu Hukum', 'S1', 'Fakultas Hukum', 'Baik Sekali', '551/SK/BAN-PT/Akred/S/IX/2022', '2027-09-30', 'Aktif', 'BAN-PT', '#'),
-('acc-prodi-6', 'S1 Agroteknologi', 'S1', 'Fakultas Pertanian', 'Baik Sekali', '143/SK/BAN-PT/Akred/S/IV/2023', '2028-04-16', 'Aktif', 'BAN-PT', '#');
+('acc-prodi-6', 'S1 Agroteknologi', 'S1', 'Fakultas Pertanian', 'Baik Sekali', '143/SK/BAN-PT/Akred/S/IV/2023', '2028-04-16', 'Aktif', 'BAN-PT', '#')
+ON CONFLICT (id) DO NOTHING;
 
 -- Seed documents
-DELETE FROM documents;
 INSERT INTO documents (id, title, category, standard_aspect, document_code, year, description, file_url, file_size, download_count, updated_at)
 VALUES
 ('doc-1', 'Buku Kebijakan SPMI Universitas Palembang Edisi 2023', 'Kebijakan SPMI', NULL, 'KB-SPMI-UNPAL-2023-01', 2023, 'Pedoman umum mengenai arah, visi, filosofi, komitmen, dan struktur penjaminan mutu internal Universitas Palembang.', '#', '2.4 MB', 520, '2023-08-10'),
@@ -141,10 +140,10 @@ VALUES
 ('doc-13', 'Standar Aspek Kesejahteraan Sivitas Akademika & Tenaga Kependidikan', 'Standar SPMI', 'Kesejahteraan', 'STD-SPMI-UNPAL-SEJAHTERA-10', 2023, 'Standar jaminan kesehatan, tunjangan kinerja dosen/tendik, lingkungan kerja yang aman dan inklusif, serta beasiswa.', '#', '2.7 MB', 480, '2023-10-30'),
 ('doc-14', 'Instrumen Formulir Audit Mutu Internal (AMI) Siklus XI 2024', 'Formulir Mutu', NULL, 'FRM-SPMI-UNPAL-AMI-2024', 2024, 'Formulir instrumen audit kepatuhan 10 aspek standar, lembar temuan KTS/OB, dan format Rencana Tindak Koreksi (RTK).', '#', '1.9 MB', 850, '2024-02-01'),
 ('doc-15', 'Laporan Hasil Audit Mutu Internal (AMI) Siklus XI Tahun 2023/2024', 'Laporan AMI', NULL, 'LAP-AMI-UNPAL-2024-XI', 2024, 'Rekapitulasi lengkap evaluasi kepatuhan 10 aspek standar mutu pada seluruh program studi dan unit kerja universitas.', '#', '5.8 MB', 420, '2024-06-15'),
-('doc-16', 'Risalah & Rencana Tindak Lanjut Rapat Tinjauan Manajemen (RTM) 2024', 'Dokumen RTM', NULL, 'RTM-SPMI-UNPAL-2024-01', 2024, 'Notula keputusan RTM universitas bersama rektorat dan senat mengenai perbaikan dan peningkatan berkelanjutan.', '#', '2.3 MB', 310, '2024-07-02');
+('doc-16', 'Risalah & Rencana Tindak Lanjut Rapat Tinjauan Manajemen (RTM) 2024', 'Dokumen RTM', NULL, 'RTM-SPMI-UNPAL-2024-01', 2024, 'Notula keputusan RTM universitas bersama rektorat dan senat mengenai perbaikan dan peningkatan berkelanjutan.', '#', '2.3 MB', 310, '2024-07-02')
+ON CONFLICT (id) DO NOTHING;
 
 -- Seed monitoring_data (10 Aspek Standar)
-DELETE FROM monitoring_data;
 INSERT INTO monitoring_data (id, standard_name, category, faculty, study_program, target_score, actual_score, achievement_rate, status, audit_period, findings_count, resolved_findings)
 VALUES
 ('mon-1', 'Standar Capaian Pembelajaran Lulusan & Kurikulum OBE (IPK > 3.30 & Waktu Tunggu < 5 Bulan)', 'Pendidikan', 'Fakultas Ekonomi & Bisnis', 'S1 Manajemen', 90, 95.2, 105.8, 'Melampaui', '2023/2024 Genap', 1, 1),
@@ -156,22 +155,23 @@ VALUES
 ('mon-7', 'Standar Ketersediaan & Pemutakhiran Fasilitas Sarana Prasarana Laboratorium', 'Sarana Prasarana', 'Fakultas Teknik', 'S1 Teknik Elektro', 85, 87.0, 102.4, 'Tercapai', '2023/2024 Genap', 2, 2),
 ('mon-8', 'Standar Transparansi & Akuntabilitas Alokasi Anggaran Keuangan Operasional', 'Keuangan', 'Universitas Palembang', 'Biro Administrasi Keuangan', 85, 90.0, 105.9, 'Melampaui', '2023/2024 Genap', 1, 1),
 ('mon-9', 'Standar Kerjasama Strategis Nasional & Internasional (MoU & MoA Aktif)', 'Kerja Sama', 'Universitas Palembang', 'Tingkat Institusi', 80, 83.5, 104.4, 'Tercapai', '2023/2024 Genap', 3, 3),
-('mon-10', 'Standar Kesejahteraan Dosen, Tenaga Kependidikan & Fasilitas Jaminan Kesehatan', 'Kesejahteraan', 'Universitas Palembang', 'Seluruh Sivitas Akademika', 85, 88.5, 104.1, 'Tercapai', '2023/2024 Genap', 1, 1);
+('mon-10', 'Standar Kesejahteraan Dosen, Tenaga Kependidikan & Fasilitas Jaminan Kesehatan', 'Kesejahteraan', 'Universitas Palembang', 'Seluruh Sivitas Akademika', 85, 88.5, 104.1, 'Tercapai', '2023/2024 Genap', 1, 1)
+ON CONFLICT (id) DO NOTHING;
 
 -- Seed regulations
-DELETE FROM regulations;
 INSERT INTO regulations (id, title, regulation_number, category, year, description, file_url, issued_by)
 VALUES
 ('reg-1', 'Undang-Undang Republik Indonesia Nomor 12 Tahun 2012 tentang Pendidikan Tinggi', 'UU No. 12 Tahun 2012', 'Undang-Undang', 2012, 'Payung hukum utama penyelenggaraan sistem penjaminan mutu pendidikan tinggi (SPM Dikti) melalui SPMI dan SPME (Akreditasi).', '#', 'Pemerintah Republik Indonesia'),
 ('reg-2', 'Permendikbudristek Nomor 53 Tahun 2023 tentang Penjaminan Mutu Pendidikan Tinggi', 'Permendikbudristek No. 53/2023', 'Permendikbudristek', 2023, 'Transformasi Standar Nasional Pendidikan Tinggi (SN-Dikti) yang menyederhanakan standar tridharma dan mekanisme akreditasi otomatis.', '#', 'Kemendikbudristek RI'),
 ('reg-3', 'Peraturan BAN-PT Nomor 1 Tahun 2022 tentang Mekanisme Akreditasi Perguruan Tinggi', 'PerBAN-PT No. 01/2022', 'SN-Dikti', 2022, 'Pedoman pelaksanaan asesmen lapangan, matriks penilaian 9 kriteria akreditasi, dan mekanisme banding.', '#', 'Badan Akreditasi Nasional Perguruan Tinggi'),
 ('reg-4', 'Surat Keputusan Rektor tentang Kebijakan SPMI Universitas Palembang Periode 2023-2028', 'SK Rektor No. 142/UNPAL/SK/2023', 'SK Rektor', 2023, 'Penetapan buku kebijakan, manual mutu, dan 10 aspek standar mutu penjaminan internal UNPAL.', '#', 'Rektor Universitas Palembang'),
-('reg-5', 'Pedoman Pelaksanaan Audit Mutu Internal (AMI) dan Rapat Tinjauan Manajemen (RTM)', 'SK Rektor No. 205/UNPAL/SK/2023', 'Pedoman SPMI', 2023, 'Standard Operating Procedure (SOP) pelaksanaan siklus audit mutu internal rutin, kualifikasi auditor, dan tindak koreksi.', '#', 'Badan Penjaminan Mutu UNPAL');
+('reg-5', 'Pedoman Pelaksanaan Audit Mutu Internal (AMI) dan Rapat Tinjauan Manajemen (RTM)', 'SK Rektor No. 205/UNPAL/SK/2023', 'Pedoman SPMI', 2023, 'Standard Operating Procedure (SOP) pelaksanaan siklus audit mutu internal rutin, kualifikasi auditor, dan tindak koreksi.', '#', 'Badan Penjaminan Mutu UNPAL')
+ON CONFLICT (id) DO NOTHING;
 
 -- Seed contact_messages
-DELETE FROM contact_messages;
 INSERT INTO contact_messages (id, name, email, phone, category, subject, message, created_at, status, reply_note)
 VALUES
 ('msg-1', 'Dr. Faisal Rahman, M.Kom.', 'faisal.fti@unpal.ac.id', '081273891029', 'Konsultasi Mutu', 'Konsultasi Penyusunan LED Akreditasi LAM-INFOKOM', 'Selamat pagi tim SPMI, kami dari Program Studi ingin menjadwalkan sesi konsultasi penyesuaian instrumen LED aspek SDM dan Pendidikan. Mohon kesediaan tim fasilitator.', now() - INTERVAL '3 days', 'Diproses', 'Dijadwalkan sesi pendampingan pada hari Kamis, 1 Agustus 2024 bersama Koordinator Akreditasi SPMI.'),
 ('msg-2', 'Dra. Ratna Juwita, M.Si.', 'ratna_juwita@gmail.com', '085290182341', 'Permohonan Dokumen', 'Permohonan Salinan Legalisir Sertifikat Akreditasi Institusi', 'Mohon dibantu salinan digital legalisir sertifikat akreditasi institusi Universitas Palembang tahun 2023 dengan barcode resmi untuk kelengkapan administrasi beasiswa luar negeri.', now() - INTERVAL '2 days', 'Selesai', 'Dokumen sertifikat berlegalisir resmi telah dikirim ke email pemohon.'),
-('msg-3', 'Budi Santoso, S.T.', 'budisantoso99@gmail.com', '081399887766', 'Pertanyaan Umum', 'Jadwal Siklus Audit Mutu Internal Periode Ganjil 2024/2025', 'Halo admin SPMI, mohon info kapan instrumen formulir AMI untuk evaluasi semester ganjil dapat diunduh oleh unit kerja? Terima kasih.', now() - INTERVAL '1 day', 'Baru', NULL);
+('msg-3', 'Budi Santoso, S.T.', 'budisantoso99@gmail.com', '081399887766', 'Pertanyaan Umum', 'Jadwal Siklus Audit Mutu Internal Periode Ganjil 2024/2025', 'Halo admin SPMI, mohon info kapan instrumen formulir AMI untuk evaluasi semester ganjil dapat diunduh oleh unit kerja? Terima kasih.', now() - INTERVAL '1 day', 'Baru', NULL)
+ON CONFLICT (id) DO NOTHING;

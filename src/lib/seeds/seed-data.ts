@@ -720,13 +720,13 @@ export const homePageContentSeed: HomePageContent = {
 export const contactPageContentSeed: ContactPageContent = {
   office_name: 'Lembaga Penjaminan Mutu Internal (SPMI)',
   institution_name: 'Universitas Palembang',
-  address: 'Gedung Rektorat Lt. 2, Kampus Terpadu Universitas Palembang, Jl. Dharma Wanita No. 1',
+  address: 'Gedung Rektorat Lt. 2, Kampus Terpadu Universitas Palembang, Jl. Dharmapala No. 1A, Bukit Besar',
   city: 'Kota Palembang, Sumatera Selatan 30139',
   email: 'spmi@unpal.ac.id',
   phone: '(0711) 512345 / 512346',
   whatsapp: '+62 812-7389-9900',
   operational_hours: 'Senin - Jumat: 08.00 - 16.00 WIB',
-  google_maps_url: 'https://maps.google.com'
+  google_maps_url: 'https://maps.google.com/maps?q=-2.992631,104.725786+(Universitas+Palembang)&t=&z=17&ie=UTF8&iwloc=B&output=embed'
 };
 
 export const newsItemsSeed: NewsItem[] = [

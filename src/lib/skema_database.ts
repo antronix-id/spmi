@@ -189,17 +189,7 @@ export async function pushDatabaseSchemaAndData() {
           id, institution_or_program, level, faculty, rating, 
           sk_number, decree_date, expiry_date, status, accreditation_agency, certificate_url
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-        ON CONFLICT (id) DO UPDATE SET
-          institution_or_program = EXCLUDED.institution_or_program,
-          level = EXCLUDED.level,
-          faculty = EXCLUDED.faculty,
-          rating = EXCLUDED.rating,
-          sk_number = EXCLUDED.sk_number,
-          decree_date = EXCLUDED.decree_date,
-          expiry_date = EXCLUDED.expiry_date,
-          status = EXCLUDED.status,
-          accreditation_agency = EXCLUDED.accreditation_agency,
-          certificate_url = EXCLUDED.certificate_url;
+        ON CONFLICT (id) DO NOTHING;
       `, [
         item.id,
         item.institution_or_program,
@@ -214,7 +204,7 @@ export async function pushDatabaseSchemaAndData() {
         item.certificate_url || '#'
       ]);
     }
-    console.log(`✅ ${accreditationsSeed.length} data Akreditasi berhasil di-push.`);
+    console.log(`✅ Data Akreditasi diproses (tanpa menimpa data yang sudah ada).`);
 
     // 3. Push Data Dokumen SPMI (documents)
     console.log('\n📦 Melakukan push data Dokumen SPMI...');
@@ -224,16 +214,7 @@ export async function pushDatabaseSchemaAndData() {
           id, title, category, standard_aspect, document_code, 
           year, description, file_url, file_size, download_count, updated_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-        ON CONFLICT (id) DO UPDATE SET
-          title = EXCLUDED.title,
-          category = EXCLUDED.category,
-          standard_aspect = EXCLUDED.standard_aspect,
-          document_code = EXCLUDED.document_code,
-          year = EXCLUDED.year,
-          description = EXCLUDED.description,
-          file_url = EXCLUDED.file_url,
-          file_size = EXCLUDED.file_size,
-          updated_at = EXCLUDED.updated_at;
+        ON CONFLICT (id) DO NOTHING;
       `, [
         item.id,
         item.title,
@@ -248,7 +229,7 @@ export async function pushDatabaseSchemaAndData() {
         item.updated_at || new Date().toISOString()
       ]);
     }
-    console.log(`✅ ${documentsSeed.length} data Dokumen SPMI berhasil di-push.`);
+    console.log(`✅ Data Dokumen SPMI diproses (tanpa menimpa data yang sudah ada).`);
 
     // 4. Push Default Access Keys
     console.log('\n📦 Melakukan push data Kunci Akses Dokumen...');
@@ -278,7 +259,7 @@ export async function pushDatabaseSchemaAndData() {
         ON CONFLICT (code) DO NOTHING;
       `, [k.id, k.code, k.label, k.is_active, k.created_by, k.note]);
     }
-    console.log(`✅ Default Kunci Akses berhasil di-push.`);
+    console.log(`✅ Kunci Akses diproses (tanpa menimpa data yang sudah ada).`);
 
     // 5. Push Data Monitoring Data (monitoring_data)
     console.log('\n📦 Melakukan push data Pemantauan Mutu (AMI)...');
@@ -289,18 +270,7 @@ export async function pushDatabaseSchemaAndData() {
           target_score, actual_score, achievement_rate, status, audit_period,
           findings_count, resolved_findings
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-        ON CONFLICT (id) DO UPDATE SET
-          standard_name = EXCLUDED.standard_name,
-          category = EXCLUDED.category,
-          faculty = EXCLUDED.faculty,
-          study_program = EXCLUDED.study_program,
-          target_score = EXCLUDED.target_score,
-          actual_score = EXCLUDED.actual_score,
-          achievement_rate = EXCLUDED.achievement_rate,
-          status = EXCLUDED.status,
-          audit_period = EXCLUDED.audit_period,
-          findings_count = EXCLUDED.findings_count,
-          resolved_findings = EXCLUDED.resolved_findings;
+        ON CONFLICT (id) DO NOTHING;
       `, [
         item.id,
         item.standard_name,
@@ -316,7 +286,7 @@ export async function pushDatabaseSchemaAndData() {
         item.resolved_findings || 0
       ]);
     }
-    console.log(`✅ ${monitoringDataSeed.length} data Pemantauan Mutu berhasil di-push.`);
+    console.log(`✅ Data Pemantauan Mutu diproses (tanpa menimpa data yang sudah ada).`);
 
     // 6. Push Data Regulasi (regulations)
     console.log('\n📦 Melakukan push data Peraturan & Regulasi...');
@@ -325,14 +295,7 @@ export async function pushDatabaseSchemaAndData() {
         INSERT INTO regulations (
           id, title, regulation_number, category, year, description, file_url, issued_by
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        ON CONFLICT (id) DO UPDATE SET
-          title = EXCLUDED.title,
-          regulation_number = EXCLUDED.regulation_number,
-          category = EXCLUDED.category,
-          year = EXCLUDED.year,
-          description = EXCLUDED.description,
-          file_url = EXCLUDED.file_url,
-          issued_by = EXCLUDED.issued_by;
+        ON CONFLICT (id) DO NOTHING;
       `, [
         item.id,
         item.title,
@@ -344,7 +307,7 @@ export async function pushDatabaseSchemaAndData() {
         item.issued_by
       ]);
     }
-    console.log(`✅ ${regulationsSeed.length} data Regulasi berhasil di-push.`);
+    console.log(`✅ Data Regulasi diproses (tanpa menimpa data yang sudah ada).`);
 
     // 7. Push Data Pesan Kontak (contact_messages)
     console.log('\n📦 Melakukan push data Kotak Masuk Pesan...');
@@ -353,15 +316,7 @@ export async function pushDatabaseSchemaAndData() {
         INSERT INTO contact_messages (
           id, name, email, phone, category, subject, message, created_at, status, reply_note
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-        ON CONFLICT (id) DO UPDATE SET
-          name = EXCLUDED.name,
-          email = EXCLUDED.email,
-          phone = EXCLUDED.phone,
-          category = EXCLUDED.category,
-          subject = EXCLUDED.subject,
-          message = EXCLUDED.message,
-          status = EXCLUDED.status,
-          reply_note = EXCLUDED.reply_note;
+        ON CONFLICT (id) DO NOTHING;
       `, [
         item.id,
         item.name,
@@ -375,7 +330,7 @@ export async function pushDatabaseSchemaAndData() {
         item.reply_note || null
       ]);
     }
-    console.log(`✅ ${contactMessagesSeed.length} data Kotak Masuk Pesan berhasil di-push.`);
+    console.log(`✅ Data Pesan Kontak diproses (tanpa menimpa data yang sudah ada).`);
 
     // 8. Push Data Konten Statis (pages_content)
     console.log('\n📦 Melakukan push data Konten Halaman Statis...');
@@ -383,11 +338,7 @@ export async function pushDatabaseSchemaAndData() {
       await client.query(`
         INSERT INTO pages_content (id, slug, title, subtitle, content, updated_at)
         VALUES ($1, $2, $3, $4, $5, $6)
-        ON CONFLICT (slug) DO UPDATE SET
-          title = EXCLUDED.title,
-          subtitle = EXCLUDED.subtitle,
-          content = EXCLUDED.content,
-          updated_at = EXCLUDED.updated_at;
+        ON CONFLICT (slug) DO NOTHING;
       `, [
         item.id,
         item.slug,
@@ -397,19 +348,35 @@ export async function pushDatabaseSchemaAndData() {
         item.updated_at || new Date().toISOString()
       ]);
     }
-    console.log(`✅ ${pageContentSeed.length} data Konten Halaman berhasil di-push.`);
+    console.log(`✅ Data Konten Halaman diproses (tanpa menimpa data yang sudah ada).`);
 
-    // 9. Push Data Pengguna Admin (users_admin)
+    // 9. Push Data Anggota Organisasi (org_members)
+    console.log('\n📦 Melakukan push data Struktur Organisasi...');
+    for (const member of orgMembersSeed) {
+      await client.query(`
+        INSERT INTO org_members (id, name, position, division, email, photo_url, nip, "order")
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        ON CONFLICT (id) DO NOTHING;
+      `, [
+        member.id,
+        member.name,
+        member.position,
+        member.division,
+        member.email || null,
+        member.photo_url || null,
+        member.nip || null,
+        member.order || 0
+      ]);
+    }
+    console.log(`✅ Data Anggota Organisasi diproses (tanpa menimpa data yang sudah ada).`);
+
+    // 10. Push Data Pengguna Admin (users_admin)
     console.log('\n📦 Melakukan push data Pengguna Admin...');
     for (const item of adminUsersSeed) {
       await client.query(`
         INSERT INTO users_admin (id, name, email, role, faculty, permissions, created_at, last_login)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        ON CONFLICT (email) DO UPDATE SET
-          name = EXCLUDED.name,
-          role = EXCLUDED.role,
-          faculty = EXCLUDED.faculty,
-          permissions = EXCLUDED.permissions;
+        ON CONFLICT (email) DO NOTHING;
       `, [
         item.id,
         item.name,
@@ -421,7 +388,7 @@ export async function pushDatabaseSchemaAndData() {
         new Date().toISOString()
       ]);
     }
-    console.log(`✅ ${adminUsersSeed.length} data Pengguna Admin berhasil di-push.`);
+    console.log(`✅ Data Pengguna Admin diproses (tanpa menimpa data yang sudah ada).`);
 
     console.log('\n===========================================================');
     console.log('🎉 SEMUA TABEL DAN DATA POSTGRESQL BERHASIL DI-PUSH 100%!');
