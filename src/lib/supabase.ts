@@ -916,8 +916,35 @@ export const dataService = {
             };
           });
 
-          // Simpan cache ke localStorage untuk backup saat offline
+          // AUTO-MIGRATION / SYNC: Jika ada user yang dibuat sebelumnya di localStorage (seperti Pak Joni, buk icha)
           if (typeof window !== 'undefined') {
+            const stored = localStorage.getItem(STORAGE_KEYS.USERS);
+            if (stored) {
+              try {
+                const localList: AdminUser[] = JSON.parse(stored);
+                for (const localUser of localList) {
+                  const cleanLocalEmail = (localUser.email || '').toLowerCase().trim();
+                  if (!cleanLocalEmail) continue;
+                  
+                  const isExistingInSupabase = supabaseUsers.some(
+                    su => su.email.toLowerCase().trim() === cleanLocalEmail
+                  );
+                  const isMockDummy = ['auditor@unpal.ac.id', 'fakultas.teknik@unpal.ac.id', 'staff@unpal.ac.id'].includes(cleanLocalEmail);
+                  
+                  if (!isExistingInSupabase && !isMockDummy) {
+                    await this.saveUser(localUser);
+                    supabaseUsers.push({
+                      ...localUser,
+                      email: cleanLocalEmail
+                    });
+                  }
+                }
+              } catch (e) {
+                // ignore
+              }
+            }
+
+            // Simpan cache ke localStorage untuk backup saat offline
             localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(supabaseUsers));
           }
           return supabaseUsers;
