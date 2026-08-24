@@ -697,7 +697,7 @@ export const dataService = {
   async getAboutContent(): Promise<AboutPageContent> {
     if (isSupabaseConfigured && supabase) {
       try {
-        const { data, error } = await supabase.from('page_contents').select('*').eq('slug', 'about').single();
+        const { data, error } = await supabase.from('pages_content').select('*').eq('slug', 'about').single();
         if (!error && data?.content) return data.content as AboutPageContent;
       } catch (e) {
         console.warn('Supabase fetch failed for about content', e);
@@ -717,7 +717,8 @@ export const dataService = {
   async saveAboutContent(content: AboutPageContent): Promise<boolean> {
     if (isSupabaseConfigured && supabase) {
       try {
-        const { error } = await supabase.from('page_contents').upsert({
+        const { error } = await supabase.from('pages_content').upsert({
+          id: 'page-about',
           slug: 'about',
           title: 'Tentang Kami',
           content,
@@ -738,7 +739,7 @@ export const dataService = {
   async getHomeContent(): Promise<HomePageContent> {
     if (isSupabaseConfigured && supabase) {
       try {
-        const { data, error } = await supabase.from('page_contents').select('*').eq('slug', 'home').single();
+        const { data, error } = await supabase.from('pages_content').select('*').eq('slug', 'home').single();
         if (!error && data?.content) return data.content as HomePageContent;
       } catch (e) {
         console.warn('Supabase fetch failed for home content', e);
@@ -758,7 +759,8 @@ export const dataService = {
   async saveHomeContent(content: HomePageContent): Promise<boolean> {
     if (isSupabaseConfigured && supabase) {
       try {
-        const { error } = await supabase.from('page_contents').upsert({
+        const { error } = await supabase.from('pages_content').upsert({
+          id: 'page-home',
           slug: 'home',
           title: 'Halaman Beranda',
           content,
@@ -779,7 +781,7 @@ export const dataService = {
   async getContactContent(): Promise<ContactPageContent> {
     if (isSupabaseConfigured && supabase) {
       try {
-        const { data, error } = await supabase.from('page_contents').select('*').eq('slug', 'contact').single();
+        const { data, error } = await supabase.from('pages_content').select('*').eq('slug', 'contact').single();
         if (!error && data?.content) return data.content as ContactPageContent;
       } catch (e) {
         console.warn('Supabase fetch failed for contact content', e);
@@ -799,7 +801,8 @@ export const dataService = {
   async saveContactContent(content: ContactPageContent): Promise<boolean> {
     if (isSupabaseConfigured && supabase) {
       try {
-        const { error } = await supabase.from('page_contents').upsert({
+        const { error } = await supabase.from('pages_content').upsert({
+          id: 'page-contact',
           slug: 'contact',
           title: 'Kontak & Informasi',
           content,
