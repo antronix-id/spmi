@@ -951,10 +951,10 @@ export const dataService = {
     if (isSupabaseConfigured && supabase) {
       try {
         await supabase.from('users_admin').delete().eq('id', id);
-        await supabase.from('admin_users').delete().eq('id', id).catch(() => {});
-      } catch (e) {
-        console.warn('Supabase delete error for user', e);
-      }
+      } catch (e) {}
+      try {
+        await supabase.from('admin_users').delete().eq('id', id);
+      } catch (e) {}
     }
     if (typeof window !== 'undefined') {
       const users = await this.getUsers();
@@ -974,7 +974,7 @@ export const dataService = {
 
     // Fallback pencarian langsung ke default users
     if (!user) {
-      user = initialAdminUsers.find(u => u.email.toLowerCase().trim() === cleanEmail) || null;
+      user = initialAdminUsers.find(u => u.email.toLowerCase().trim() === cleanEmail);
     }
 
     if (!user) return null;
