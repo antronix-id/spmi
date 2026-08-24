@@ -768,6 +768,21 @@ export const newsItemsSeed: NewsItem[] = [
 export const adminUsersSeed: AdminUser[] = [
   {
     id: 'c7f9a4ad-d0ac-4fae-9fac-2056d1eb89e7',
+    name: 'Super Administrator SPMI',
+    email: 'superadmin@unpal.ac.id',
+    password: 'admin123',
+    role: 'superadmin',
+    role_label: 'Super Administrator',
+    nip: '198501012010011001',
+    unit_fakultas: 'Lembaga Penjaminan Mutu (SPMI)',
+    avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
+    is_active: true,
+    permissions: getDefaultPermissions('superadmin'),
+    last_login: '2026-08-24 10:00',
+    created_at: '2024-01-01'
+  },
+  {
+    id: 'c7f9a4ad-d0ac-4fae-9fac-2056d1eb89e8',
     name: 'Administrator SPMI UNPAL',
     email: 'admin@unpal.ac.id',
     password: 'password',
