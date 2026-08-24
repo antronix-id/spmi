@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 // Singleton PostgreSQL connection pool for Next.js API Route
 let pool: Pool | null = null;
 
