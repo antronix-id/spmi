@@ -227,6 +227,8 @@ export function ContentManagementTab({
     if (result?.url) {
       setMemberForm(prev => ({ ...prev, photo_url: result.url }));
       onShowToast('Foto profil berhasil diunggah!', 'success');
+    } else {
+      onShowToast('Gagal mengunggah foto profil. Pastikan file valid.', 'error');
     }
   };
 
@@ -270,6 +272,19 @@ export function ContentManagementTab({
     }));
   };
 
+  const handleResetSlideImages = () => {
+    setHomeForm(prev => ({
+      ...prev,
+      slider_images: [
+        'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1000',
+        'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=1000'
+      ]
+    }));
+    onShowToast('Slide foto banner direset ke gambar standar kampus!', 'success');
+  };
+
   const handleRemoveSlideImage = (index: number) => {
     setHomeForm(prev => ({
       ...prev,
@@ -290,6 +305,8 @@ export function ContentManagementTab({
     if (result?.url) {
       handleSlideImageChange(index, result.url);
       onShowToast('Foto slide berhasil diunggah!', 'success');
+    } else {
+      onShowToast('Gagal mengunggah foto slide. Pastikan berkas berupa gambar.', 'error');
     }
   };
 
@@ -739,7 +756,7 @@ export function ContentManagementTab({
 
             {/* Slide Foto Hero Banner (Image Slider) Editor */}
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-3">
+              <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-3">
                 <div>
                   <CardTitle className="text-sm font-black text-slate-900 flex items-center gap-2">
                     <ImageIcon className="w-4 h-4 text-black" />
@@ -749,16 +766,29 @@ export function ContentManagementTab({
                     Kelola foto-foto yang berputar otomatis pada slider hero di halaman depan
                   </CardDescription>
                 </div>
-                <Button
-                  type="button"
-                  onClick={handleAddSlideImage}
-                  size="sm"
-                  variant="outline"
-                  className="h-7 text-xs bg-white border-2 border-slate-900 text-slate-900 hover:bg-yellow-100 gap-1 rounded-lg font-bold"
-                >
-                  <Plus className="w-3 h-3" />
-                  <span>Tambah Foto Slide</span>
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    onClick={handleResetSlideImages}
+                    size="sm"
+                    variant="outline"
+                    className="h-7 text-xs bg-slate-100 border-2 border-slate-900 text-slate-700 hover:bg-slate-200 gap-1 rounded-lg font-bold"
+                    title="Kembalikan foto slide ke gambar standar bawaan"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    <span>Reset ke Default</span>
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleAddSlideImage}
+                    size="sm"
+                    variant="outline"
+                    className="h-7 text-xs bg-white border-2 border-slate-900 text-slate-900 hover:bg-yellow-100 gap-1 rounded-lg font-bold"
+                  >
+                    <Plus className="w-3 h-3" />
+                    <span>Tambah Foto Slide</span>
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 {(homeForm.slider_images && homeForm.slider_images.length > 0 
@@ -767,70 +797,85 @@ export function ContentManagementTab({
                       'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1000',
                       'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1000'
                     ]
-                ).map((imgUrl, idx) => (
-                  <div key={idx} className="p-3.5 rounded-xl bg-slate-50 border-2 border-slate-900 flex flex-col sm:flex-row items-start sm:items-center gap-3 shadow-2xs">
-                    {/* Thumbnail preview */}
-                    <div className="w-20 h-14 rounded-lg overflow-hidden border-2 border-slate-900 shrink-0 bg-slate-200 flex items-center justify-center">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={imgUrl} alt={`Preview Slide ${idx + 1}`} className="w-full h-full object-cover" />
-                    </div>
-
-                    <div className="flex-1 space-y-1 min-w-0 w-full">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-[11px] font-black text-slate-800 font-mono">
-                          Slide #{idx + 1}
-                        </Label>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Input
-                          value={imgUrl}
-                          onChange={(e) => handleSlideImageChange(idx, e.target.value)}
-                          placeholder="https://... atau klik Upload"
-                          className="bg-white border-2 border-slate-900 text-slate-900 text-xs h-8 flex-1 rounded-lg font-medium"
+                ).map((imgUrl, idx) => {
+                  const isBlobUrl = imgUrl && imgUrl.startsWith('blob:');
+                  return (
+                    <div key={idx} className={`p-3.5 rounded-xl border-2 flex flex-col sm:flex-row items-start sm:items-center gap-3 shadow-2xs ${isBlobUrl ? 'bg-amber-50/70 border-amber-500' : 'bg-slate-50 border-slate-900'}`}>
+                      {/* Thumbnail preview */}
+                      <div className="w-20 h-14 rounded-lg overflow-hidden border-2 border-slate-900 shrink-0 bg-slate-200 flex items-center justify-center relative">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img 
+                          src={imgUrl} 
+                          alt={`Preview Slide ${idx + 1}`} 
+                          className="w-full h-full object-cover" 
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=300';
+                          }}
                         />
-                        <label className="cursor-pointer shrink-0">
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) handleSlideImageUpload(idx, file);
-                            }}
-                            className="hidden"
-                            disabled={uploadingSlideIndex === idx}
+                      </div>
+
+                      <div className="flex-1 space-y-1 min-w-0 w-full">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-[11px] font-black text-slate-800 font-mono flex items-center gap-2">
+                            Slide #{idx + 1}
+                            {isBlobUrl && (
+                              <span className="text-[10px] bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded font-sans font-semibold">
+                                ⚠️ URL Sementara (Silakan Upload Ulang atau Simpan)
+                              </span>
+                            )}
+                          </Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            value={imgUrl}
+                            onChange={(e) => handleSlideImageChange(idx, e.target.value)}
+                            placeholder="https://... atau klik Upload"
+                            className="bg-white border-2 border-slate-900 text-slate-900 text-xs h-8 flex-1 rounded-lg font-medium"
                           />
+                          <label className="cursor-pointer shrink-0">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handleSlideImageUpload(idx, file);
+                              }}
+                              className="hidden"
+                              disabled={uploadingSlideIndex === idx}
+                            />
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              disabled={uploadingSlideIndex === idx}
+                              className="h-8 px-2.5 text-xs bg-white border-2 border-slate-900 hover:bg-yellow-100 text-slate-900 gap-1 font-bold rounded-lg"
+                              asChild
+                            >
+                              <span>
+                                {uploadingSlideIndex === idx ? (
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                ) : (
+                                  <Upload className="w-3.5 h-3.5 text-black" />
+                                )}
+                                <span className="hidden sm:inline">Upload</span>
+                              </span>
+                            </Button>
+                          </label>
                           <Button
                             type="button"
-                            size="sm"
-                            variant="outline"
-                            disabled={uploadingSlideIndex === idx}
-                            className="h-8 px-2.5 text-xs bg-white border-2 border-slate-900 hover:bg-yellow-100 text-slate-900 gap-1 font-bold rounded-lg"
-                            asChild
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleRemoveSlideImage(idx)}
+                            className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50 shrink-0 rounded-lg"
+                            title="Hapus foto slide"
                           >
-                            <span>
-                              {uploadingSlideIndex === idx ? (
-                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                              ) : (
-                                <Upload className="w-3.5 h-3.5 text-black" />
-                              )}
-                              <span className="hidden sm:inline">Upload</span>
-                            </span>
+                            <Trash2 className="w-3.5 h-3.5" />
                           </Button>
-                        </label>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleRemoveSlideImage(idx)}
-                          className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50 shrink-0 rounded-lg"
-                          title="Hapus foto slide"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </CardContent>
             </Card>
 

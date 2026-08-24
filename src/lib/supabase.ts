@@ -577,6 +577,9 @@ export const dataService = {
   // 6. FILE STORAGE / UPLOAD HELPER
   // ==========================================
   async uploadFile(file: File, folder: 'documents' | 'accreditations' | 'regulations' = 'documents'): Promise<{ url: string; size: string; name: string } | null> {
+    const fileSizeStr = `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+
+    // 1. Coba upload via Next.js API route (/api/upload)
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -592,22 +595,23 @@ export const dataService = {
         if (result.success && result.url) {
           return {
             url: result.url,
-            size: result.size,
+            size: result.size || fileSizeStr,
             name: result.fileName || file.name,
           };
         }
       }
     } catch (e) {
-      console.warn('API route upload failed, checking fallbacks', e);
+      console.warn('API route upload failed, checking direct Supabase Storage...', e);
     }
 
-    const fileSizeStr = `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+    // 2. Coba upload langsung ke Supabase Storage client jika terhubung
     const cleanFileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
 
     if (isSupabaseConfigured && supabase) {
       try {
         const filePath = `${folder}/${cleanFileName}`;
         const { data, error } = await supabase.storage.from('spmi-files').upload(filePath, file, {
+          contentType: file.type || 'application/octet-stream',
           cacheControl: '3600',
           upsert: true
         });
@@ -621,17 +625,68 @@ export const dataService = {
           };
         }
       } catch (e) {
-        console.warn('Supabase storage upload failed, creating object url', e);
+        console.warn('Direct Supabase storage upload failed, proceeding to fallback...', e);
       }
     }
 
-    // Local / offline fallback: Create object URL
-    const objectUrl = URL.createObjectURL(file);
-    return {
-      url: objectUrl,
-      size: fileSizeStr,
-      name: file.name
-    };
+    // 3. Fallback: Untuk Gambar, simpan sebagai Data URL Base64 yang persisten
+    // PENTING: Jangan gunakan URL.createObjectURL() karena URL blob: hanya bertahan di RAM sesi browser saat itu dan rusak ketika halaman dimuat ulang.
+    if (file.type && file.type.startsWith('image/')) {
+      try {
+        const base64DataUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const rawResult = e.target?.result as string;
+            if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+              const img = new Image();
+              img.onload = () => {
+                const maxWidth = 1920;
+                const maxHeight = 1080;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxWidth || height > maxHeight) {
+                  if (width / height > maxWidth / maxHeight) {
+                    height = Math.round((height * maxWidth) / width);
+                    width = maxWidth;
+                  } else {
+                    width = Math.round((width * maxHeight) / height);
+                    height = maxHeight;
+                  }
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                  ctx.drawImage(img, 0, 0, width, height);
+                  resolve(canvas.toDataURL('image/jpeg', 0.85));
+                } else {
+                  resolve(rawResult);
+                }
+              };
+              img.onerror = () => resolve(rawResult);
+              img.src = rawResult;
+            } else {
+              resolve(rawResult);
+            }
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+
+        return {
+          url: base64DataUrl,
+          size: fileSizeStr,
+          name: file.name
+        };
+      } catch (err) {
+        console.error('Failed to convert image to base64 data URL', err);
+      }
+    }
+
+    return null;
   },
 
   // ==========================================

@@ -42,19 +42,37 @@ export async function POST(request: NextRequest) {
     const sizeInMB = (file.size / (1024 * 1024)).toFixed(1);
     const sizeStr = `${sizeInMB} MB`;
 
-    // 1. Coba upload ke Supabase Storage jika dikonfigurasi (Direkomendasikan untuk Vercel)
+    // 1. Coba upload ke Supabase Storage jika dikonfigurasi
     if (supabaseUrl && serviceRoleKey && !supabaseUrl.includes('placeholder')) {
       try {
         const supabase = createClient(supabaseUrl, serviceRoleKey);
         const storagePath = `${folder}/${uniqueFileName}`;
 
-        const { data, error } = await supabase.storage
+        let { data, error } = await supabase.storage
           .from('spmi-files')
           .upload(storagePath, buffer, {
             contentType: file.type || 'application/octet-stream',
             cacheControl: '3600',
             upsert: true
           });
+
+        // If bucket does not exist, try creating bucket and retry upload
+        if (error && (error.message?.toLowerCase().includes('not found') || (error as any).statusCode === 404)) {
+          try {
+            await supabase.storage.createBucket('spmi-files', { public: true });
+            const retry = await supabase.storage
+              .from('spmi-files')
+              .upload(storagePath, buffer, {
+                contentType: file.type || 'application/octet-stream',
+                cacheControl: '3600',
+                upsert: true
+              });
+            data = retry.data;
+            error = retry.error;
+          } catch (createErr) {
+            console.warn('Gagal auto-create bucket Supabase:', createErr);
+          }
+        }
 
         if (!error && data) {
           const { data: publicUrlData } = supabase.storage
@@ -69,13 +87,15 @@ export async function POST(request: NextRequest) {
             size: sizeStr,
             uploadedAt: new Date().toISOString(),
           });
+        } else if (error) {
+          console.warn('Supabase storage upload error:', error.message);
         }
       } catch (sbErr) {
         console.warn('Gagal upload ke Supabase Storage, mencoba penyimpanan lokal...', sbErr);
       }
     }
 
-    // 2. Fallback: Simpan ke folder public/uploads (Local Development / Server Tradisional)
+    // 2. Fallback: Simpan ke disk lokal (public/uploads)
     try {
       const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
       if (!fs.existsSync(uploadsDir)) {
@@ -96,16 +116,32 @@ export async function POST(request: NextRequest) {
         uploadedAt: new Date().toISOString(),
       });
     } catch (fsErr: any) {
-      console.error('Error saat menyimpan ke disk lokal:', fsErr);
+      console.warn('Error saat menyimpan ke disk lokal, mencoba fallback base64:', fsErr);
+
+      // 3. Fallback terakhir untuk gambar: Base64 Data URL (dijamin tampil di semua browser)
+      if (file.type.startsWith('image/')) {
+        const mimeType = file.type || 'image/jpeg';
+        const base64Data = buffer.toString('base64');
+        const dataUrl = `data:${mimeType};base64,${base64Data}`;
+        return NextResponse.json({
+          success: true,
+          url: dataUrl,
+          fileName: fileName,
+          storedFileName: uniqueFileName,
+          size: sizeStr,
+          uploadedAt: new Date().toISOString(),
+        });
+      }
+
       return NextResponse.json(
-        { success: false, error: 'Gagal menyimpan berkas ke server.' },
+        { success: false, error: 'Gagal menyimpan berkas ke server: ' + (fsErr?.message || '') },
         { status: 500 }
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error handling file upload:', error);
     return NextResponse.json(
-      { success: false, error: 'Gagal memproses unggahan berkas.' },
+      { success: false, error: 'Gagal memproses unggahan berkas: ' + (error?.message || '') },
       { status: 500 }
     );
   }

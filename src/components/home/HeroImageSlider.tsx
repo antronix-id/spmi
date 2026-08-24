@@ -15,8 +15,15 @@ const DEFAULT_IMAGE_URLS = [
   'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=1000'
 ];
 
+// Helper to filter out dead/expired blob: URLs from previous sessions
+function sanitizeSliderImages(list?: string[]): string[] {
+  if (!list || list.length === 0) return DEFAULT_IMAGE_URLS;
+  const valid = list.filter(url => Boolean(url) && !url.startsWith('blob:'));
+  return valid.length > 0 ? valid : DEFAULT_IMAGE_URLS;
+}
+
 export function HeroImageSlider() {
-  const [images, setImages] = useState<string[]>(initialHomeContent.slider_images || DEFAULT_IMAGE_URLS);
+  const [images, setImages] = useState<string[]>(sanitizeSliderImages(initialHomeContent.slider_images));
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -25,7 +32,8 @@ export function HeroImageSlider() {
       try {
         const home = await dataService.getHomeContent();
         if (home?.slider_images && home.slider_images.length > 0) {
-          setImages(home.slider_images);
+          const sanitized = sanitizeSliderImages(home.slider_images);
+          setImages(sanitized);
         }
       } catch (e) {
         console.warn('Failed to load slide images', e);
@@ -76,12 +84,19 @@ export function HeroImageSlider() {
           } transition-transform duration-1000`}
         >
           {/* Image */}
-          <div className="relative w-full h-full">
+          <div className="relative w-full h-full bg-slate-800">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={url}
               alt={`Slide ${idx + 1}`}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                // Fallback to default image if URL fails to load
+                const fallback = DEFAULT_IMAGE_URLS[idx % DEFAULT_IMAGE_URLS.length];
+                if ((e.currentTarget as HTMLImageElement).src !== fallback) {
+                  (e.currentTarget as HTMLImageElement).src = fallback;
+                }
+              }}
             />
           </div>
         </div>
