@@ -81,11 +81,31 @@ export function ContentManagementTab({
   // State for sub-tabs
   const [activeSubTab, setActiveSubTab] = useState<string>('tentang-kami');
 
-  // Form states
-  const [aboutForm, setAboutForm] = useState<AboutPageContent>(initialAbout || initialAboutContent);
-  const [homeForm, setHomeForm] = useState<HomePageContent>(initialHome || initialHomeContent);
-  const [contactForm, setContactForm] = useState<ContactPageContent>(initialContact || initialContactContent);
-  const [members, setMembers] = useState<OrganizationMember[]>(initialMembers || initialOrgMembers);
+  // Form states with defensive fallback defaults
+  const [aboutForm, setAboutForm] = useState<AboutPageContent>(() => ({
+    ...initialAboutContent,
+    ...(initialAbout || {}),
+    misi: Array.isArray(initialAbout?.misi) ? initialAbout.misi : initialAboutContent.misi,
+    tujuan: Array.isArray(initialAbout?.tujuan) ? initialAbout.tujuan : initialAboutContent.tujuan,
+    tupoksi: Array.isArray(initialAbout?.tupoksi) ? initialAbout.tupoksi : initialAboutContent.tupoksi,
+    budaya_mutu: Array.isArray(initialAbout?.budaya_mutu) ? initialAbout.budaya_mutu : initialAboutContent.budaya_mutu,
+  }));
+
+  const [homeForm, setHomeForm] = useState<HomePageContent>(() => ({
+    ...initialHomeContent,
+    ...(initialHome || {}),
+    stats: Array.isArray(initialHome?.stats) && initialHome.stats.length > 0 ? initialHome.stats : initialHomeContent.stats,
+    slider_images: Array.isArray(initialHome?.slider_images) ? initialHome.slider_images : (initialHomeContent.slider_images || []),
+  }));
+
+  const [contactForm, setContactForm] = useState<ContactPageContent>(() => ({
+    ...initialContactContent,
+    ...(initialContact || {})
+  }));
+
+  const [members, setMembers] = useState<OrganizationMember[]>(() => {
+    return Array.isArray(initialMembers) ? initialMembers : initialOrgMembers;
+  });
 
   // Saving states
   const [savingAbout, setSavingAbout] = useState(false);
@@ -236,25 +256,25 @@ export function ContentManagementTab({
   // ABOUT PAGE DYNAMIC LIST HELPERS
   // ========================================================
   const handleAddMisi = () => {
-    setAboutForm(prev => ({ ...prev, misi: [...prev.misi, ''] }));
+    setAboutForm(prev => ({ ...prev, misi: [...(prev?.misi || []), ''] }));
   };
   const handleRemoveMisi = (index: number) => {
-    setAboutForm(prev => ({ ...prev, misi: prev.misi.filter((_, i) => i !== index) }));
+    setAboutForm(prev => ({ ...prev, misi: (prev?.misi || []).filter((_, i) => i !== index) }));
   };
   const handleMisiChange = (index: number, val: string) => {
-    const next = [...aboutForm.misi];
+    const next = [...(aboutForm?.misi || [])];
     next[index] = val;
     setAboutForm(prev => ({ ...prev, misi: next }));
   };
 
   const handleAddTujuan = () => {
-    setAboutForm(prev => ({ ...prev, tujuan: [...prev.tujuan, ''] }));
+    setAboutForm(prev => ({ ...prev, tujuan: [...(prev?.tujuan || []), ''] }));
   };
   const handleRemoveTujuan = (index: number) => {
-    setAboutForm(prev => ({ ...prev, tujuan: prev.tujuan.filter((_, i) => i !== index) }));
+    setAboutForm(prev => ({ ...prev, tujuan: (prev?.tujuan || []).filter((_, i) => i !== index) }));
   };
   const handleTujuanChange = (index: number, val: string) => {
-    const next = [...aboutForm.tujuan];
+    const next = [...(aboutForm?.tujuan || [])];
     next[index] = val;
     setAboutForm(prev => ({ ...prev, tujuan: next }));
   };
@@ -432,7 +452,7 @@ export function ContentManagementTab({
                 </Button>
               </CardHeader>
               <CardContent className="space-y-3">
-                {aboutForm.misi.map((m, idx) => (
+                {(aboutForm?.misi || []).map((m, idx) => (
                   <div key={idx} className="flex items-start gap-2">
                     <span className="w-6 h-6 rounded-lg bg-yellow-100 border-2 border-slate-900 text-slate-900 font-mono font-black text-xs flex items-center justify-center shrink-0 mt-1 shadow-2xs">
                       {idx + 1}
@@ -483,7 +503,7 @@ export function ContentManagementTab({
                 </Button>
               </CardHeader>
               <CardContent className="space-y-3">
-                {aboutForm.tujuan.map((t, idx) => (
+                {(aboutForm?.tujuan || []).map((t, idx) => (
                   <div key={idx} className="flex items-start gap-2">
                     <span className="w-6 h-6 rounded-lg bg-yellow-100 border-2 border-slate-900 text-slate-900 font-mono font-black text-xs flex items-center justify-center shrink-0 mt-1 shadow-2xs">
                       {idx + 1}
@@ -581,14 +601,14 @@ export function ContentManagementTab({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {members.length === 0 ? (
+                {(members || []).length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} className="text-center py-12 text-xs text-slate-500 font-medium">
                       Belum ada data struktur organisasi. Klik &quot;Tambah Pengurus&quot; di atas.
                     </TableCell>
                   </TableRow>
                 ) : (
-                  members.map((member) => (
+                  (members || []).map((member) => (
                     <TableRow key={member.id} className="border-b border-slate-200 hover:bg-yellow-50/40 transition-colors">
                       <TableCell className="py-3 px-4 text-center">
                         <span className="font-mono text-xs font-black text-slate-900 bg-yellow-50 px-2 py-0.5 rounded-lg border border-slate-900 shadow-2xs">
@@ -698,7 +718,7 @@ export function ContentManagementTab({
                 <div className="space-y-1.5">
                   <Label className="text-xs font-bold text-slate-900">Teks Badge Atas</Label>
                   <Input
-                    value={homeForm.hero_badge}
+                    value={homeForm?.hero_badge || ''}
                     onChange={(e) => setHomeForm({ ...homeForm, hero_badge: e.target.value })}
                     className="bg-white border-2 border-slate-900 text-slate-900 font-medium text-xs h-9 rounded-lg"
                   />
@@ -708,7 +728,7 @@ export function ContentManagementTab({
                   <div className="space-y-1.5">
                     <Label className="text-xs font-bold text-slate-900">Judul Baris 1</Label>
                     <Input
-                      value={homeForm.hero_title}
+                      value={homeForm?.hero_title || ''}
                       onChange={(e) => setHomeForm({ ...homeForm, hero_title: e.target.value })}
                       className="bg-white border-2 border-slate-900 text-slate-900 font-medium text-xs h-9 rounded-lg"
                     />
@@ -716,7 +736,7 @@ export function ContentManagementTab({
                   <div className="space-y-1.5">
                     <Label className="text-xs font-bold text-slate-900">Judul Highlight</Label>
                     <Input
-                      value={homeForm.hero_title_highlight}
+                      value={homeForm?.hero_title_highlight || ''}
                       onChange={(e) => setHomeForm({ ...homeForm, hero_title_highlight: e.target.value })}
                       className="bg-white border-2 border-slate-900 text-slate-900 font-medium text-xs h-9 rounded-lg"
                     />
@@ -727,7 +747,7 @@ export function ContentManagementTab({
                   <Label className="text-xs font-bold text-slate-900">Subjudul / Deskripsi Pembuka</Label>
                   <Textarea
                     rows={3}
-                    value={homeForm.hero_subtitle}
+                    value={homeForm?.hero_subtitle || ''}
                     onChange={(e) => setHomeForm({ ...homeForm, hero_subtitle: e.target.value })}
                     className="bg-white border-2 border-slate-900 text-slate-900 font-medium text-xs leading-relaxed rounded-lg"
                   />
@@ -737,7 +757,7 @@ export function ContentManagementTab({
                   <div className="space-y-1.5">
                     <Label className="text-xs font-bold text-slate-900">Teks Tombol Utama</Label>
                     <Input
-                      value={homeForm.hero_cta_primary_text}
+                      value={homeForm?.hero_cta_primary_text || ''}
                       onChange={(e) => setHomeForm({ ...homeForm, hero_cta_primary_text: e.target.value })}
                       className="bg-white border-2 border-slate-900 text-slate-900 font-medium text-xs h-9 rounded-lg"
                     />
@@ -745,7 +765,7 @@ export function ContentManagementTab({
                   <div className="space-y-1.5">
                     <Label className="text-xs font-bold text-slate-900">Teks Tombol Sekunder</Label>
                     <Input
-                      value={homeForm.hero_cta_secondary_text}
+                      value={homeForm?.hero_cta_secondary_text || ''}
                       onChange={(e) => setHomeForm({ ...homeForm, hero_cta_secondary_text: e.target.value })}
                       className="bg-white border-2 border-slate-900 text-slate-900 font-medium text-xs h-9 rounded-lg"
                     />
@@ -791,14 +811,14 @@ export function ContentManagementTab({
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                {(homeForm.slider_images && homeForm.slider_images.length > 0 
+                {(homeForm?.slider_images && homeForm.slider_images.length > 0 
                   ? homeForm.slider_images 
                   : [
                       'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=1000',
                       'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1000'
                     ]
                 ).map((imgUrl, idx) => {
-                  const isBlobUrl = imgUrl && imgUrl.startsWith('blob:');
+                  const isBlobUrl = typeof imgUrl === 'string' && imgUrl.startsWith('blob:');
                   return (
                     <div key={idx} className={`p-3.5 rounded-xl border-2 flex flex-col sm:flex-row items-start sm:items-center gap-3 shadow-2xs ${isBlobUrl ? 'bg-amber-50/70 border-amber-500' : 'bg-slate-50 border-slate-900'}`}>
                       {/* Thumbnail preview */}
@@ -891,8 +911,8 @@ export function ContentManagementTab({
                 </CardDescription>
               </CardHeader>
               <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {homeForm.stats.map((stat, idx) => (
-                  <div key={stat.id} className="p-3.5 rounded-xl bg-slate-50 border-2 border-slate-900 space-y-2.5 shadow-2xs">
+                {(homeForm?.stats || []).map((stat, idx) => (
+                  <div key={stat.id || idx} className="p-3.5 rounded-xl bg-slate-50 border-2 border-slate-900 space-y-2.5 shadow-2xs">
                     <div className="flex items-center justify-between">
                       <span className="text-[11px] font-black text-slate-800 font-mono">Kartu #{idx + 1}</span>
                       <span className="text-[10px] px-2 py-0.5 rounded-md bg-yellow-100 border border-slate-900 text-slate-900 font-mono font-bold">Ikon: {stat.icon_name}</span>
@@ -903,9 +923,11 @@ export function ContentManagementTab({
                         <Input
                           value={stat.value}
                           onChange={(e) => {
-                            const next = [...homeForm.stats];
-                            next[idx].value = e.target.value;
-                            setHomeForm({ ...homeForm, stats: next });
+                            const next = [...(homeForm?.stats || [])];
+                            if (next[idx]) {
+                              next[idx] = { ...next[idx], value: e.target.value };
+                              setHomeForm({ ...homeForm, stats: next });
+                            }
                           }}
                           className="bg-white border-2 border-slate-900 text-slate-900 h-8 text-xs font-black font-mono mt-1 rounded-lg"
                         />
@@ -915,9 +937,11 @@ export function ContentManagementTab({
                         <Input
                           value={stat.title}
                           onChange={(e) => {
-                            const next = [...homeForm.stats];
-                            next[idx].title = e.target.value;
-                            setHomeForm({ ...homeForm, stats: next });
+                            const next = [...(homeForm?.stats || [])];
+                            if (next[idx]) {
+                              next[idx] = { ...next[idx], title: e.target.value };
+                              setHomeForm({ ...homeForm, stats: next });
+                            }
                           }}
                           className="bg-white border-2 border-slate-900 text-slate-900 h-8 text-xs font-black mt-1 rounded-lg"
                         />
@@ -928,9 +952,11 @@ export function ContentManagementTab({
                       <Input
                         value={stat.description}
                         onChange={(e) => {
-                          const next = [...homeForm.stats];
-                          next[idx].description = e.target.value;
-                          setHomeForm({ ...homeForm, stats: next });
+                          const next = [...(homeForm?.stats || [])];
+                          if (next[idx]) {
+                            next[idx] = { ...next[idx], description: e.target.value };
+                            setHomeForm({ ...homeForm, stats: next });
+                          }
                         }}
                         className="bg-white border-2 border-slate-900 text-slate-900 h-8 text-xs font-medium mt-1 rounded-lg"
                       />

@@ -698,7 +698,19 @@ export const dataService = {
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('pages_content').select('*').eq('slug', 'about').single();
-        if (!error && data?.content) return data.content as AboutPageContent;
+        if (!error && data?.content) {
+          const contentObj = typeof data.content === 'string' ? JSON.parse(data.content) : data.content;
+          if (contentObj && typeof contentObj === 'object') {
+            return {
+              ...initialAboutContent,
+              ...contentObj,
+              misi: Array.isArray(contentObj.misi) ? contentObj.misi : initialAboutContent.misi,
+              tujuan: Array.isArray(contentObj.tujuan) ? contentObj.tujuan : initialAboutContent.tujuan,
+              tupoksi: Array.isArray(contentObj.tupoksi) ? contentObj.tupoksi : initialAboutContent.tupoksi,
+              budaya_mutu: Array.isArray(contentObj.budaya_mutu) ? contentObj.budaya_mutu : initialAboutContent.budaya_mutu,
+            };
+          }
+        }
       } catch (e) {
         console.warn('Supabase fetch failed for about content', e);
       }
@@ -707,7 +719,17 @@ export const dataService = {
       const cached = localStorage.getItem(STORAGE_KEYS.CONTENT_ABOUT);
       if (cached) {
         try {
-          return JSON.parse(cached);
+          const contentObj = JSON.parse(cached);
+          if (contentObj && typeof contentObj === 'object') {
+            return {
+              ...initialAboutContent,
+              ...contentObj,
+              misi: Array.isArray(contentObj.misi) ? contentObj.misi : initialAboutContent.misi,
+              tujuan: Array.isArray(contentObj.tujuan) ? contentObj.tujuan : initialAboutContent.tujuan,
+              tupoksi: Array.isArray(contentObj.tupoksi) ? contentObj.tupoksi : initialAboutContent.tupoksi,
+              budaya_mutu: Array.isArray(contentObj.budaya_mutu) ? contentObj.budaya_mutu : initialAboutContent.budaya_mutu,
+            };
+          }
         } catch {}
       }
     }
@@ -740,7 +762,17 @@ export const dataService = {
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('pages_content').select('*').eq('slug', 'home').single();
-        if (!error && data?.content) return data.content as HomePageContent;
+        if (!error && data?.content) {
+          const contentObj = typeof data.content === 'string' ? JSON.parse(data.content) : data.content;
+          if (contentObj && typeof contentObj === 'object') {
+            return {
+              ...initialHomeContent,
+              ...contentObj,
+              stats: Array.isArray(contentObj.stats) && contentObj.stats.length > 0 ? contentObj.stats : initialHomeContent.stats,
+              slider_images: Array.isArray(contentObj.slider_images) ? contentObj.slider_images : (initialHomeContent.slider_images || []),
+            };
+          }
+        }
       } catch (e) {
         console.warn('Supabase fetch failed for home content', e);
       }
@@ -749,7 +781,15 @@ export const dataService = {
       const cached = localStorage.getItem(STORAGE_KEYS.CONTENT_HOME);
       if (cached) {
         try {
-          return JSON.parse(cached);
+          const contentObj = JSON.parse(cached);
+          if (contentObj && typeof contentObj === 'object') {
+            return {
+              ...initialHomeContent,
+              ...contentObj,
+              stats: Array.isArray(contentObj.stats) && contentObj.stats.length > 0 ? contentObj.stats : initialHomeContent.stats,
+              slider_images: Array.isArray(contentObj.slider_images) ? contentObj.slider_images : (initialHomeContent.slider_images || []),
+            };
+          }
         } catch {}
       }
     }
@@ -782,7 +822,15 @@ export const dataService = {
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('pages_content').select('*').eq('slug', 'contact').single();
-        if (!error && data?.content) return data.content as ContactPageContent;
+        if (!error && data?.content) {
+          const contentObj = typeof data.content === 'string' ? JSON.parse(data.content) : data.content;
+          if (contentObj && typeof contentObj === 'object') {
+            return {
+              ...initialContactContent,
+              ...contentObj
+            };
+          }
+        }
       } catch (e) {
         console.warn('Supabase fetch failed for contact content', e);
       }
@@ -791,7 +839,13 @@ export const dataService = {
       const cached = localStorage.getItem(STORAGE_KEYS.CONTENT_CONTACT);
       if (cached) {
         try {
-          return JSON.parse(cached);
+          const contentObj = JSON.parse(cached);
+          if (contentObj && typeof contentObj === 'object') {
+            return {
+              ...initialContactContent,
+              ...contentObj
+            };
+          }
         } catch {}
       }
     }
@@ -827,7 +881,7 @@ export const dataService = {
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('org_members').select('*').order('order');
-        if (!error && data && data.length > 0) return data;
+        if (!error && Array.isArray(data) && data.length > 0) return data;
       } catch (e) {
         console.warn('Supabase fetch failed for org members', e);
       }
@@ -836,7 +890,8 @@ export const dataService = {
       const cached = localStorage.getItem(STORAGE_KEYS.ORG_MEMBERS);
       if (cached) {
         try {
-          return JSON.parse(cached);
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
         } catch {}
       }
     }
