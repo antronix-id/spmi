@@ -52,6 +52,11 @@ export function UsersTab({
   const [selectedAccessType, setSelectedAccessType] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
 
+  // Sync users state with parent initialUsers
+  React.useEffect(() => {
+    setUsers(initialUsers);
+  }, [initialUsers]);
+
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);

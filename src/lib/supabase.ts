@@ -23,7 +23,9 @@ import {
   AboutPageContent,
   HomePageContent,
   ContactPageContent,
-  AdminUser
+  AdminUser,
+  AdminRole,
+  getDefaultPermissions
 } from './types';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -886,118 +888,143 @@ export const dataService = {
   // 9. ADMIN USERS & AUTHENTICATION
   // ==========================================
   async getUsers(): Promise<AdminUser[]> {
-    let supabaseUsers: AdminUser[] = [];
     if (isSupabaseConfigured && supabase) {
       try {
-        // 1. Coba ambil dari tabel users_admin (PostgreSQL / Supabase Schema)
-        const { data: uData, error: uError } = await supabase.from('users_admin').select('*');
+        const { data: uData, error: uError } = await supabase
+          .from('users_admin')
+          .select('*')
+          .order('created_at', { ascending: true });
+
         if (!uError && uData && uData.length > 0) {
-          supabaseUsers = uData.map((item: any) => ({
-            id: item.id || `user_${Date.now()}`,
-            name: item.name || item.full_name || 'Administrator',
-            email: (item.email || '').toLowerCase().trim(),
-            password: item.password || item.password_hash || 'admin123',
-            role: item.role || 'superadmin',
-            role_label: item.role_label || (item.role === 'superadmin' ? 'Super Administrator' : 'Administrator'),
-            nip: item.nip || '',
-            unit_fakultas: item.unit_fakultas || item.faculty || 'Lembaga Penjaminan Mutu (SPMI)',
-            avatar_url: item.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
-            is_active: item.is_active !== undefined ? Boolean(item.is_active) : true,
-            permissions: item.permissions || (item.role === 'admin_spmi' ? initialAdminUsers[1]?.permissions : initialAdminUsers[0]?.permissions),
-            last_login: item.last_login || '',
-            created_at: item.created_at || new Date().toISOString()
-          }));
+          const supabaseUsers: AdminUser[] = uData.map((item: any) => {
+            const role = (item.role || 'superadmin') as AdminRole;
+            const isSuper = role === 'superadmin';
+            return {
+              id: item.id,
+              name: item.name || item.full_name || 'Administrator',
+              email: (item.email || '').toLowerCase().trim(),
+              password: item.password_hash || item.password || 'admin123',
+              role: role,
+              role_label: item.role_label || (isSuper ? 'Super Administrator' : 'Administrator SPMI'),
+              nip: item.nip || '',
+              unit_fakultas: item.faculty || item.unit_fakultas || 'Lembaga Penjaminan Mutu (SPMI)',
+              avatar_url: item.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
+              is_active: item.is_active !== undefined ? Boolean(item.is_active) : true,
+              permissions: item.permissions || getDefaultPermissions(role),
+              last_login: item.last_login || '',
+              created_at: item.created_at ? item.created_at.substring(0, 10) : new Date().toISOString().substring(0, 10)
+            };
+          });
+
+          // Simpan cache ke localStorage untuk backup saat offline
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(supabaseUsers));
+          }
+          return supabaseUsers;
         }
       } catch (e) {
-        console.warn('Supabase fetch error for users_admin', e);
-      }
-
-      // Jika users_admin kosong, coba tabel admin_users
-      if (supabaseUsers.length === 0) {
-        try {
-          const { data, error } = await supabase.from('admin_users').select('*');
-          if (!error && data && data.length > 0) {
-            supabaseUsers = data as AdminUser[];
-          }
-        } catch (e) {
-          // ignore
-        }
+        console.warn('Supabase fetch error for users_admin, falling back to cache:', e);
       }
     }
 
-    // Merge dengan default admin users agar superadmin selalu tersedia
-    const userMap = new Map<string, AdminUser>();
-    
-    // Seed default users
-    initialAdminUsers.forEach(u => userMap.set(u.email.toLowerCase().trim(), u));
-
-    // Override dengan local storage users jika ada
+    // Fallback jika Supabase offline / tidak terhubung
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem(STORAGE_KEYS.USERS);
       if (stored) {
         try {
-          const localList: AdminUser[] = JSON.parse(stored);
-          localList.forEach(u => userMap.set(u.email.toLowerCase().trim(), u));
+          return JSON.parse(stored);
         } catch {
           // ignore error
         }
       }
     }
 
-    // Override dengan Supabase cloud live users
-    supabaseUsers.forEach(u => userMap.set(u.email.toLowerCase().trim(), u));
-
-    const allUsers = Array.from(userMap.values());
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(allUsers));
-    }
-    return allUsers;
+    return initialAdminUsers;
   },
 
   async getUserById(id: string): Promise<AdminUser | null> {
     const users = await this.getUsers();
-    return users.find(u => u.id === id) || null;
+    return users.find(u => u.id === id || u.email.toLowerCase() === id.toLowerCase()) || null;
   },
 
   async saveUser(user: AdminUser): Promise<boolean> {
+    const cleanEmail = (user.email || '').toLowerCase().trim();
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    
+    // Pastikan ID berformat UUID yang valid untuk tipe data UUID di Supabase PostgreSQL
+    let validId = user.id;
+    if (!validId || !uuidRegex.test(validId)) {
+      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        validId = crypto.randomUUID();
+      } else {
+        validId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+          const r = Math.random() * 16 | 0;
+          const v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
+    }
+
     const cleanUser: AdminUser = {
       ...user,
-      email: user.email.toLowerCase().trim()
+      id: validId,
+      email: cleanEmail
     };
 
     if (isSupabaseConfigured && supabase) {
       try {
-        await supabase.from('users_admin').upsert({
+        // Cek apakah user dengan email ini sudah ada di Supabase untuk sinkronisasi UUID ID
+        const { data: existingUser } = await supabase
+          .from('users_admin')
+          .select('id')
+          .eq('email', cleanEmail)
+          .maybeSingle();
+
+        if (existingUser?.id) {
+          cleanUser.id = existingUser.id;
+        }
+
+        const payload = {
           id: cleanUser.id,
           name: cleanUser.name,
           full_name: cleanUser.name,
           email: cleanUser.email,
           role: cleanUser.role,
-          faculty: cleanUser.unit_fakultas,
-          password_hash: cleanUser.password,
-          permissions: cleanUser.permissions,
-          nip: cleanUser.nip,
-          is_active: cleanUser.is_active,
-          created_at: cleanUser.created_at,
-          last_login: cleanUser.last_login
-        }, { onConflict: 'email' });
+          faculty: cleanUser.unit_fakultas || 'Lembaga Penjaminan Mutu (SPMI)',
+          password_hash: cleanUser.password || 'admin123',
+          permissions: cleanUser.permissions || getDefaultPermissions(cleanUser.role),
+          nip: cleanUser.nip || null,
+          is_active: cleanUser.is_active !== undefined ? Boolean(cleanUser.is_active) : true,
+          created_at: cleanUser.created_at || new Date().toISOString(),
+          last_login: cleanUser.last_login || null
+        };
+
+        const { error } = await supabase.from('users_admin').upsert(payload, { onConflict: 'id' });
+        if (error) {
+          console.error('Supabase save error for users_admin:', error);
+          return false;
+        }
       } catch (e) {
-        console.warn('Supabase save error for user', e);
+        console.error('Supabase save exception for user:', e);
+        return false;
       }
     }
 
     if (typeof window !== 'undefined') {
-      const users = await this.getUsers();
-      const index = users.findIndex(u => u.email.toLowerCase().trim() === cleanUser.email);
-      let updated: AdminUser[];
-      if (index >= 0) {
-        updated = [...users];
-        updated[index] = { ...users[index], ...cleanUser };
-      } else {
-        updated = [...users, cleanUser];
+      const stored = localStorage.getItem(STORAGE_KEYS.USERS);
+      let localList: AdminUser[] = [];
+      if (stored) {
+        try {
+          localList = JSON.parse(stored);
+        } catch {}
       }
-      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(updated));
-      return true;
+      const index = localList.findIndex(u => u.email.toLowerCase().trim() === cleanUser.email);
+      if (index >= 0) {
+        localList[index] = { ...localList[index], ...cleanUser };
+      } else {
+        localList.push(cleanUser);
+      }
+      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(localList));
     }
     return true;
   },
@@ -1005,17 +1032,27 @@ export const dataService = {
   async deleteUser(id: string): Promise<boolean> {
     if (isSupabaseConfigured && supabase) {
       try {
-        await supabase.from('users_admin').delete().eq('id', id);
-      } catch (e) {}
-      try {
-        await supabase.from('admin_users').delete().eq('id', id);
-      } catch (e) {}
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (uuidRegex.test(id)) {
+          const { error } = await supabase.from('users_admin').delete().eq('id', id);
+          if (error) console.error('Supabase delete error by id:', error);
+        } else {
+          const { error } = await supabase.from('users_admin').delete().eq('email', id);
+          if (error) console.error('Supabase delete error by email:', error);
+        }
+      } catch (e) {
+        console.error('Supabase delete exception for user:', e);
+      }
     }
     if (typeof window !== 'undefined') {
-      const users = await this.getUsers();
-      const updated = users.filter(u => u.id !== id);
-      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(updated));
-      return true;
+      const stored = localStorage.getItem(STORAGE_KEYS.USERS);
+      if (stored) {
+        try {
+          const localList: AdminUser[] = JSON.parse(stored);
+          const updated = localList.filter(u => u.id !== id && u.email.toLowerCase() !== id.toLowerCase());
+          localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(updated));
+        } catch {}
+      }
     }
     return true;
   },
@@ -1024,18 +1061,19 @@ export const dataService = {
     const cleanEmail = (email || '').toLowerCase().trim();
     const cleanPass = (password || '').trim();
 
+    // 1. Ambil data pengguna langsung dari Supabase
     const users = await this.getUsers();
     let user = users.find(u => u.email.toLowerCase().trim() === cleanEmail);
 
-    // Fallback pencarian langsung ke default users
-    if (!user) {
+    // Fallback jika offline dan user tidak ditemukan di list
+    if (!user && !isSupabaseConfigured) {
       user = initialAdminUsers.find(u => u.email.toLowerCase().trim() === cleanEmail);
     }
 
     if (!user) return null;
     if (!user.is_active) return null;
 
-    // Verifikasi password (user.password atau user.password_hash atau default)
+    // Verifikasi kata sandi
     const storedPass = (user.password || (user as any).password_hash || '').trim();
     
     const isPassValid = 
@@ -1048,15 +1086,22 @@ export const dataService = {
       return null;
     }
 
-    // Update last_login
+    // Update timestamp last_login di Supabase
     const now = new Date();
     const formatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    const updatedUser = { ...user, last_login: formatted };
+    const updatedUser: AdminUser = { ...user, last_login: formatted };
+    
+    // Simpan pembaruan status last_login
     await this.saveUser(updatedUser);
 
     if (typeof window !== 'undefined') {
       localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(updatedUser));
-      localStorage.setItem('spmi_admin_auth', JSON.stringify({ email: updatedUser.email, role: updatedUser.role, name: updatedUser.name, loggedAt: Date.now() }));
+      localStorage.setItem('spmi_admin_auth', JSON.stringify({
+        email: updatedUser.email,
+        role: updatedUser.role,
+        name: updatedUser.name,
+        loggedAt: Date.now()
+      }));
     }
     return updatedUser;
   },
@@ -1072,7 +1117,7 @@ export const dataService = {
         }
       }
     }
-    return initialAdminUsers[0]; // fallback to superadmin
+    return null;
   },
 
   logoutUser() {

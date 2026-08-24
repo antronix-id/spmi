@@ -178,24 +178,26 @@ export function UserModal({
       return;
     }
 
-    // 2. VALIDASI KEUNIKAN KATA SANDI
-    const passwordExists = allUsers.some(
-      u => u.id !== user?.id && u.password && u.password === enteredPassword
-    );
-    if (passwordExists) {
-      onShowToast?.('Kata sandi ini sudah digunakan oleh akun lain! Gunakan kata sandi yang unik.', 'error');
-      setSaving(false);
-      return;
-    }
-
     // Hitung menu aktif untuk label dinamis
     const activeMenuCount = Object.values(permissions).filter(p => p.view).length;
     const isFullAccess = activeMenuCount === ALL_MODULE_KEYS.length && Object.values(permissions).every(p => p.create && p.edit && p.delete);
     const roleLabel = isFullAccess ? 'Akses Penuh (Super Admin)' : `${activeMenuCount} Menu Aktif`;
 
+    const generateId = () => {
+      if (user?.id) return user.id;
+      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return crypto.randomUUID();
+      }
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    };
+
     const now = new Date();
     const finalUser: AdminUser = {
-      id: user?.id || `user-${Date.now()}`,
+      id: generateId(),
       name: formData.name.trim(),
       email: emailTrimmed,
       password: enteredPassword,
