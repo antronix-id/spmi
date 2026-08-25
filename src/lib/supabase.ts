@@ -135,7 +135,12 @@ export const dataService = {
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('documents').select('*').order('year', { ascending: false });
-        if (!error && data && data.length > 0) return data;
+        if (!error && data) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(STORAGE_KEYS.DOCUMENTS, JSON.stringify(data));
+          }
+          return data;
+        }
       } catch (e) {
         console.warn('Supabase fetch failed, falling back to local data', e);
       }
@@ -154,46 +159,78 @@ export const dataService = {
   },
 
   async saveDocument(item: SpmiDocument): Promise<boolean> {
+    const formattedItem: SpmiDocument = {
+      ...item,
+      standard_aspect: item.category === 'Standar SPMI' && item.standard_aspect ? item.standard_aspect : undefined,
+      download_count: item.download_count ?? 0,
+      updated_at: item.updated_at ? item.updated_at.split('T')[0] : new Date().toISOString().split('T')[0]
+    };
+
+    let success = false;
+
     if (isSupabaseConfigured && supabase) {
       try {
-        const { error } = await supabase.from('documents').upsert(item);
-        if (!error) return true;
+        const dbPayload = {
+          ...formattedItem,
+          standard_aspect: formattedItem.standard_aspect || null,
+        };
+        const { error } = await supabase.from('documents').upsert(dbPayload);
+        if (!error) {
+          success = true;
+        } else {
+          console.error('Supabase saveDocument error:', error.message);
+        }
       } catch (e) {
         console.warn('Supabase save error', e);
       }
     }
+
     if (typeof window !== 'undefined') {
-      const items = await this.getDocuments();
-      const index = items.findIndex(i => i.id === item.id);
-      let updated: SpmiDocument[];
-      if (index >= 0) {
-        updated = [...items];
-        updated[index] = item;
-      } else {
-        updated = [item, ...items];
+      try {
+        const items = await this.getDocuments();
+        const index = items.findIndex(i => i.id === formattedItem.id);
+        let updated: SpmiDocument[];
+        if (index >= 0) {
+          updated = [...items];
+          updated[index] = formattedItem;
+        } else {
+          updated = [formattedItem, ...items];
+        }
+        localStorage.setItem(STORAGE_KEYS.DOCUMENTS, JSON.stringify(updated));
+        success = true;
+      } catch (err) {
+        console.error('Local storage save error', err);
       }
-      localStorage.setItem(STORAGE_KEYS.DOCUMENTS, JSON.stringify(updated));
-      return true;
     }
-    return false;
+
+    return success;
   },
 
   async deleteDocument(id: string): Promise<boolean> {
+    let success = false;
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('documents').delete().eq('id', id);
-        if (!error) return true;
+        if (!error) {
+          success = true;
+        } else {
+          console.error('Supabase deleteDocument error:', error.message);
+        }
       } catch (e) {
         console.warn('Supabase delete error', e);
       }
     }
     if (typeof window !== 'undefined') {
-      const items = await this.getDocuments();
-      const updated = items.filter(i => i.id !== id);
-      localStorage.setItem(STORAGE_KEYS.DOCUMENTS, JSON.stringify(updated));
-      return true;
+      try {
+        const items = await this.getDocuments();
+        const updated = items.filter(i => i.id !== id);
+        localStorage.setItem(STORAGE_KEYS.DOCUMENTS, JSON.stringify(updated));
+        success = true;
+      } catch (err) {
+        console.error('Local storage delete error', err);
+      }
     }
-    return false;
+    return success;
   },
 
   // ==========================================

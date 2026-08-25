@@ -149,20 +149,19 @@ function DokumenContent() {
     if (!file) return;
     setUploadingDocFile(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Upload gagal');
+      const uploadResult = await dataService.uploadFile(file, 'documents');
+      if (!uploadResult || !uploadResult.url) {
+        throw new Error('Gagal mengunggah berkas ke Supabase Storage');
+      }
       setDocForm(prev => ({
         ...prev,
-        file_url: data.url,
-        file_size: data.size ? `${(data.size / (1024 * 1024)).toFixed(1)} MB` : '1.5 MB'
+        file_url: uploadResult.url,
+        file_size: uploadResult.size || `${(file.size / (1024 * 1024)).toFixed(1)} MB`
       }));
       setUploadedDocFileName(file.name);
-      showToast(`File "${file.name}" berhasil diunggah!`);
+      showToast(`Berkas "${file.name}" berhasil diunggah!`);
     } catch (err: any) {
-      showToast(err.message || 'Gagal mengunggah file', 'error');
+      showToast(err.message || 'Gagal mengunggah berkas', 'error');
     } finally {
       setUploadingDocFile(false);
     }
@@ -177,12 +176,12 @@ function DokumenContent() {
 
     const item: SpmiDocument = {
       id: editingDocId || `doc_${Date.now()}`,
-      title: docForm.title,
+      title: docForm.title.trim(),
       category: docForm.category,
-      standard_aspect: docForm.category === 'Standar SPMI' ? (docForm.standard_aspect as SpmiStandardAspect) : undefined,
-      document_code: docForm.document_code,
+      standard_aspect: docForm.category === 'Standar SPMI' && docForm.standard_aspect ? (docForm.standard_aspect as SpmiStandardAspect) : undefined,
+      document_code: docForm.document_code.trim(),
       year: Number(docForm.year),
-      description: docForm.description,
+      description: docForm.description.trim(),
       file_url: docForm.file_url || '#',
       file_size: docForm.file_size || '2.0 MB',
       updated_at: new Date().toISOString()
@@ -190,24 +189,23 @@ function DokumenContent() {
 
     const success = await dataService.saveDocument(item);
     if (success) {
-      if (editingDocId) {
-        setDocuments(documents.map(d => d.id === editingDocId ? item : d));
-        showToast('Dokumen berhasil diperbarui');
-      } else {
-        setDocuments([item, ...documents]);
-        showToast('Dokumen baru berhasil ditambahkan');
-      }
+      await loadData();
+      showToast(editingDocId ? 'Dokumen berhasil diperbarui' : 'Dokumen baru berhasil ditambahkan');
       setDocModalOpen(false);
     } else {
-      showToast('Gagal menyimpan dokumen', 'error');
+      showToast('Gagal menyimpan dokumen ke database', 'error');
     }
   };
 
   const handleDeleteDoc = async (id: string) => {
     if (confirm('Apakah Anda yakin ingin menghapus dokumen ini?')) {
-      await dataService.deleteDocument(id);
-      setDocuments(documents.filter(d => d.id !== id));
-      showToast('Dokumen berhasil dihapus');
+      const success = await dataService.deleteDocument(id);
+      if (success) {
+        await loadData();
+        showToast('Dokumen berhasil dihapus dari database');
+      } else {
+        showToast('Gagal menghapus dokumen', 'error');
+      }
     }
   };
 
