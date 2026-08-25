@@ -231,10 +231,13 @@ export function AccreditationModal({
 
           {/* Row 5: Simple Upload Sertifikat */}
           <div className="space-y-1.5 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
-            <Label className="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
-              <Upload className="w-3.5 h-3.5 text-amber-400" />
-              Sertifikat / Salinan SK (PDF)
-            </Label>
+            <div className="flex items-center justify-between">
+              <Label className="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
+                <Upload className="w-3.5 h-3.5 text-amber-400" />
+                Sertifikat / Salinan SK (PDF)
+              </Label>
+              <span className="text-[10px] text-zinc-500 font-mono">Maks. 6 MB</span>
+            </div>
             <div className="flex items-center gap-3">
               <label className="cursor-pointer inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-200 border border-zinc-700 transition-colors shadow-2xs">
                 <FileUp className="w-3.5 h-3.5" />

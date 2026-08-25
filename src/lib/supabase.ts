@@ -616,6 +616,12 @@ export const dataService = {
   // 6. FILE STORAGE / UPLOAD HELPER
   // ==========================================
   async uploadFile(file: File, folder: 'documents' | 'accreditations' | 'regulations' = 'documents'): Promise<{ url: string; size: string; name: string } | null> {
+    const MAX_FILE_SIZE = 6 * 1024 * 1024; // 6 MB
+    if (file.size > MAX_FILE_SIZE) {
+      const currentSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      throw new Error(`Ukuran berkas (${currentSizeMB} MB) melebihi batas maksimal 6 MB.`);
+    }
+
     const fileSizeStr = `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
 
     // 1. Coba upload via Next.js API route (/api/upload)
@@ -629,17 +635,21 @@ export const dataService = {
         body: formData,
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success && result.url) {
-          return {
-            url: result.url,
-            size: result.size || fileSizeStr,
-            name: result.fileName || file.name,
-          };
-        }
+      const result = await response.json().catch(() => null);
+
+      if (response.ok && result?.success && result?.url) {
+        return {
+          url: result.url,
+          size: result.size || fileSizeStr,
+          name: result.fileName || file.name,
+        };
+      } else if (!response.ok && result?.error) {
+        throw new Error(result.error);
       }
-    } catch (e) {
+    } catch (e: any) {
+      if (e.message?.includes('melebihi batas maksimal')) {
+        throw e;
+      }
       console.warn('API route upload failed, checking direct Supabase Storage...', e);
     }
 

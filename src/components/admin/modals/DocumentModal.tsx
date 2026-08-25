@@ -199,9 +199,12 @@ export function DocumentModal({
                 <Upload className="w-3.5 h-3.5 text-yellow-400" />
                 Berkas PDF Dokumen (Supabase Storage)
               </Label>
-              {form.file_size && (
-                <span className="text-[10px] text-zinc-400 font-mono">Ukuran: {form.file_size}</span>
-              )}
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-zinc-500 font-mono">Maks. 6 MB</span>
+                {form.file_size && (
+                  <span className="text-[10px] text-yellow-400 font-mono font-medium">Ukuran: {form.file_size}</span>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center gap-2.5 flex-wrap">

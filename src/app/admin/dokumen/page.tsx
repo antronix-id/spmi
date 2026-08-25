@@ -147,6 +147,15 @@ function DokumenContent() {
   const handleDocFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const MAX_FILE_SIZE = 6 * 1024 * 1024; // 6 MB
+    if (file.size > MAX_FILE_SIZE) {
+      const currentMB = (file.size / (1024 * 1024)).toFixed(2);
+      showToast(`Ukuran berkas (${currentMB} MB) melebihi batas maksimal 6 MB. Silakan pilih berkas yang lebih kecil.`, 'error');
+      e.target.value = '';
+      return;
+    }
+
     setUploadingDocFile(true);
     try {
       const uploadResult = await dataService.uploadFile(file, 'documents');

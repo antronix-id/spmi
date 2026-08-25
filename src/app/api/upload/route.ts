@@ -22,6 +22,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validasi batas maksimal ukuran file 6 MB
+    const MAX_FILE_SIZE = 6 * 1024 * 1024; // 6 MB
+    if (file.size > MAX_FILE_SIZE) {
+      const currentSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: `Ukuran berkas (${currentSizeMB} MB) melebihi batas maksimal 6 MB.` 
+        },
+        { status: 400 }
+      );
+    }
+
     // Validate MIME type / extension
     const fileName = file.name;
     const isPdf = fileName.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf';
