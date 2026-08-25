@@ -122,7 +122,7 @@ export function DocumentsTab({
     const matchesSearch =
       !searchQuery ||
       doc.title.toLowerCase().includes(q) ||
-      doc.document_code.toLowerCase().includes(q) ||
+      (doc.document_code && doc.document_code.toLowerCase().includes(q)) ||
       doc.category.toLowerCase().includes(q) ||
       (doc.standard_aspect && doc.standard_aspect.toLowerCase().includes(q)) ||
       (doc.description && doc.description.toLowerCase().includes(q));
@@ -362,9 +362,13 @@ export function DocumentsTab({
 
                   {/* Document Code */}
                   <TableCell className="py-3.5 px-4 whitespace-nowrap">
-                    <span className="font-mono text-xs text-slate-900 bg-yellow-50 px-2.5 py-1 rounded-lg border border-slate-900 shadow-2xs inline-block font-extrabold">
-                      {doc.document_code}
-                    </span>
+                    {doc.document_code ? (
+                      <span className="font-mono text-xs text-slate-900 bg-yellow-50 px-2.5 py-1 rounded-lg border border-slate-900 shadow-2xs inline-block font-extrabold">
+                        {doc.document_code}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-slate-400 font-mono italic">-</span>
+                    )}
                   </TableCell>
 
                   {/* Year */}

@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS documents (
     title TEXT NOT NULL,
     category TEXT NOT NULL,
     standard_aspect TEXT,
-    document_code TEXT NOT NULL UNIQUE,
+    document_code TEXT,
     year INTEGER NOT NULL,
     description TEXT,
     file_url TEXT NOT NULL,

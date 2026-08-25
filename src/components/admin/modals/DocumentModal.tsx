@@ -148,12 +148,11 @@ export function DocumentModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label htmlFor="doc-code" className="text-xs font-semibold text-zinc-300">
-                Kode Dokumen *
+                Kode Dokumen (Opsional)
               </Label>
               <Input
                 id="doc-code"
-                required
-                placeholder="Contoh: UNPAL-STD-PEND-01"
+                placeholder="Contoh: UNPAL-STD-PEND-01 (Opsional)"
                 value={form.document_code}
                 onChange={(e) => setForm((prev: any) => ({ ...prev, document_code: e.target.value }))}
                 className="h-8.5 bg-zinc-900 border-zinc-800 text-zinc-100 text-xs font-mono rounded-lg"

@@ -172,6 +172,7 @@ export const dataService = {
       try {
         const dbPayload = {
           ...formattedItem,
+          document_code: formattedItem.document_code?.trim() || null,
           standard_aspect: formattedItem.standard_aspect || null,
         };
         const { error } = await supabase.from('documents').upsert(dbPayload);
@@ -179,6 +180,12 @@ export const dataService = {
           success = true;
         } else {
           console.error('Supabase saveDocument error:', error.message);
+          // Fallback jika database Supabase lama memiliki constraint NOT NULL pada document_code
+          if (error.message?.toLowerCase().includes('document_code') && (error.message?.toLowerCase().includes('null') || error.message?.toLowerCase().includes('violates'))) {
+            const retryPayload = { ...dbPayload, document_code: '-' };
+            const { error: retryError } = await supabase.from('documents').upsert(retryPayload);
+            if (!retryError) success = true;
+          }
         }
       } catch (e) {
         console.warn('Supabase save error', e);

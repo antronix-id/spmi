@@ -74,7 +74,7 @@ export default function DocumentViewerModal({ document, onClose }: DocumentViewe
                 Nomor / Kode
               </div>
               <div className="text-xs font-bold text-slate-800 mt-1 truncate">
-                {document.document_code}
+                {document.document_code || '-'}
               </div>
             </div>
 
@@ -133,8 +133,8 @@ export default function DocumentViewerModal({ document, onClose }: DocumentViewe
                   Format PDF resmi berstempel dan ditandatangani Badan Penjaminan Mutu Universitas Palembang.
                 </p>
               </div>
-              <Badge variant="outline" className="border-white/20 text-sky-300 font-mono text-xs">
-                {document.document_code}.pdf
+              <Badge variant="outline" className="border-white/20 text-sky-300 font-mono text-xs max-w-full truncate">
+                {document.document_code ? `${document.document_code}.pdf` : `${document.title}.pdf`}
               </Badge>
             </div>
           </div>

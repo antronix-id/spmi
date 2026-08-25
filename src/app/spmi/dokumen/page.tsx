@@ -195,8 +195,8 @@ function DokumenSpmiContent() {
     return documents.filter((doc) => {
       const matchesSearch =
         doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doc.document_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doc.description.toLowerCase().includes(searchTerm.toLowerCase());
+        (doc.document_code && doc.document_code.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (doc.description && doc.description.toLowerCase().includes(searchTerm.toLowerCase()));
 
       const matchesCategory =
         selectedCategory === 'Semua' || doc.category === selectedCategory;
@@ -408,8 +408,12 @@ function DokumenSpmiContent() {
                 </p>
 
                 <div className="flex items-center gap-3 text-xs text-slate-500 font-mono font-medium pt-1">
-                  <span>{doc.document_code}</span>
-                  <span>•</span>
+                  {doc.document_code && (
+                    <>
+                      <span>{doc.document_code}</span>
+                      <span>•</span>
+                    </>
+                  )}
                   <span>{doc.file_size || '2.5 MB'}</span>
                 </div>
               </div>

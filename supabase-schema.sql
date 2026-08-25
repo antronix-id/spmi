@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS documents (
     title TEXT NOT NULL,
     category TEXT NOT NULL, -- 'Kebijakan SPMI' | 'Manual Mutu' | 'Standar SPMI' | 'Formulir Mutu' | 'Laporan AMI' | 'Dokumen RTM'
     standard_aspect TEXT, -- 'Pendidikan' | 'Penelitian' | 'Pengabdian pada Masyarakat' | dll
-    document_code TEXT NOT NULL UNIQUE,
+    document_code TEXT,
     year INTEGER NOT NULL,
     description TEXT,
     file_url TEXT NOT NULL,

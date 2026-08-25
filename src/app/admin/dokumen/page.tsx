@@ -118,7 +118,7 @@ function DokumenContent() {
       title: '',
       category: 'Standar SPMI',
       standard_aspect: 'Pendidikan',
-      document_code: `STD-SPMI-${new Date().getFullYear()}-${String(documents.length + 1).padStart(3, '0')}`,
+      document_code: '',
       year: new Date().getFullYear(),
       description: '',
       file_url: '#',
@@ -134,7 +134,7 @@ function DokumenContent() {
       title: doc.title,
       category: doc.category,
       standard_aspect: doc.standard_aspect || '',
-      document_code: doc.document_code,
+      document_code: doc.document_code || '',
       year: doc.year,
       description: doc.description || '',
       file_url: doc.file_url,
@@ -178,8 +178,8 @@ function DokumenContent() {
 
   const handleSaveDoc = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!docForm.title || !docForm.document_code) {
-      showToast('Judul dan Kode Dokumen wajib diisi', 'error');
+    if (!docForm.title?.trim()) {
+      showToast('Nama / Judul Dokumen wajib diisi', 'error');
       return;
     }
 
@@ -188,7 +188,7 @@ function DokumenContent() {
       title: docForm.title.trim(),
       category: docForm.category,
       standard_aspect: docForm.category === 'Standar SPMI' && docForm.standard_aspect ? (docForm.standard_aspect as SpmiStandardAspect) : undefined,
-      document_code: docForm.document_code.trim(),
+      document_code: docForm.document_code?.trim() || '',
       year: Number(docForm.year),
       description: docForm.description.trim(),
       file_url: docForm.file_url || '#',

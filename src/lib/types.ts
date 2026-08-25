@@ -30,7 +30,7 @@ export interface SpmiDocument {
   title: string;
   category: 'Kebijakan SPMI' | 'Manual Mutu' | 'Standar SPMI' | 'Formulir Mutu' | 'Laporan AMI' | 'Dokumen RTM';
   standard_aspect?: SpmiStandardAspect;
-  document_code: string;
+  document_code?: string;
   year: number;
   description: string;
   file_url: string;

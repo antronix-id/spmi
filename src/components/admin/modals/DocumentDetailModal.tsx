@@ -55,7 +55,7 @@ export function DocumentDetailModal({
               <span>Detail Dokumen SPMI</span>
             </DialogTitle>
             <Badge variant="outline" className="text-[10px] bg-zinc-900 border-zinc-700 text-zinc-300 font-mono">
-              {document.document_code}
+              {document.document_code || 'Tanpa Kode'}
             </Badge>
           </div>
           <DialogDescription className="text-xs text-zinc-400">
@@ -109,7 +109,7 @@ export function DocumentDetailModal({
                 <span>Kode Dokumen</span>
               </div>
               <div className="text-xs font-mono font-bold text-zinc-100 truncate">
-                {document.document_code}
+                {document.document_code || '-'}
               </div>
             </div>
 
