@@ -78,7 +78,7 @@ export function AccreditationsTab({
   const canEdit = currentUser?.role === 'superadmin' || currentUser?.permissions?.accreditations?.edit !== false;
   const canDelete = currentUser?.role === 'superadmin' || currentUser?.permissions?.accreditations?.delete !== false;
 
-  const ratings = ['Semua', 'Unggul', 'Baik Sekali', 'Baik', 'A', 'B'];
+  const ratings = ['Semua', 'A', 'Unggul', 'B', 'Baik Sekali', 'C', 'Baik', 'Terakreditasi'];
   const agencies = ['Semua', 'BAN-PT', 'LAMEMBA', 'LAMDIK', 'LAM-TEKNIK'];
 
   const filteredAccreds = accreditations.filter((acc) => {
@@ -105,15 +105,22 @@ export function AccreditationsTab({
         </span>
       );
     }
-    if (rating === 'Baik Sekali') {
+    if (rating === 'Baik Sekali' || rating === 'B') {
       return (
         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-zinc-800 text-white border border-zinc-600 shadow-sm font-sans">
           {rating}
         </span>
       );
     }
+    if (rating === 'Baik' || rating === 'C') {
+      return (
+        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-zinc-900 text-zinc-200 border border-zinc-700 shadow-2xs font-sans">
+          {rating}
+        </span>
+      );
+    }
     return (
-      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-zinc-900 text-zinc-200 border border-zinc-700 shadow-2xs font-sans">
+      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-zinc-900 text-zinc-300 border border-zinc-700 shadow-2xs font-sans">
         {rating}
       </span>
     );

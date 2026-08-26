@@ -171,12 +171,13 @@ export function AccreditationModal({
                   <SelectValue placeholder="Pilih Nilai" />
                 </SelectTrigger>
                 <SelectContent className="bg-zinc-900 border-zinc-800 text-zinc-100 text-xs">
+                  <SelectItem value="A">A</SelectItem>
                   <SelectItem value="Unggul">Unggul</SelectItem>
+                  <SelectItem value="B">B</SelectItem>
                   <SelectItem value="Baik Sekali">Baik Sekali</SelectItem>
+                  <SelectItem value="C">C</SelectItem>
                   <SelectItem value="Baik">Baik</SelectItem>
-                  <SelectItem value="A">A (7 Standar)</SelectItem>
-                  <SelectItem value="B">B (7 Standar)</SelectItem>
-                  <SelectItem value="Terakreditasi">Terakreditasi Sementara</SelectItem>
+                  <SelectItem value="Terakreditasi">Terakreditasi</SelectItem>
                 </SelectContent>
               </Select>
             </div>

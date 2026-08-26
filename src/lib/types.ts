@@ -16,7 +16,7 @@ export interface Accreditation {
   institution_or_program: string;
   level: 'D3' | 'S1' | 'S2' | 'S3' | 'Profesi' | 'Institusi';
   faculty?: string;
-  rating: 'Unggul' | 'Baik Sekali' | 'Baik' | 'A' | 'B' | 'C' | 'Terakreditasi';
+  rating: 'A' | 'Unggul' | 'B' | 'Baik Sekali' | 'C' | 'Baik' | 'Terakreditasi';
   sk_number: string;
   decree_date?: string; // Tanggal Penetapan SK
   expiry_date: string;

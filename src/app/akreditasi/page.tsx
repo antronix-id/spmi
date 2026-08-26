@@ -210,7 +210,7 @@ export default function AkreditasiPage() {
               {/* Rating Filter */}
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
                 <span className="text-xs font-black text-slate-600 mr-1 uppercase">Peringkat:</span>
-                {['Semua', 'Unggul', 'Baik Sekali', 'Baik'].map((rat) => (
+                {['Semua', 'A', 'Unggul', 'B', 'Baik Sekali', 'C', 'Baik', 'Terakreditasi'].map((rat) => (
                   <Button
                     key={rat}
                     variant={selectedRating === rat ? 'default' : 'secondary'}
@@ -282,7 +282,7 @@ export default function AkreditasiPage() {
 
                     <TableCell>
                       <Badge 
-                        variant={item.rating === 'Unggul' ? 'emerald' : item.rating === 'Baik Sekali' ? 'brand' : 'gold'}
+                        variant={item.rating === 'Unggul' || item.rating === 'A' ? 'emerald' : item.rating === 'Baik Sekali' || item.rating === 'B' ? 'brand' : 'gold'}
                         className="font-bold text-xs"
                       >
                         {item.rating}
