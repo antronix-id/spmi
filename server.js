@@ -3,28 +3,26 @@
  * CPANEL APPLICATION STARTUP FILE - SPMI UNIVERSITAS PALEMBANG
  * ==============================================================================
  * File ini digunakan sebagai "Application startup file" di menu Setup Node.js App
- * pada cPanel. File ini akan menjalankan server produksi Next.js.
+ * pada cPanel. Mendukung Phusion Passenger dan standalone Node server.
  * ==============================================================================
  */
 
 const { createServer } = require('http');
 const { parse } = require('url');
 const next = require('next');
-const path = require('path');
-const fs = require('fs');
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = process.env.HOSTNAME || 'localhost';
-const port = parseInt(process.env.PORT || '3000', 10);
+const port = process.env.PORT || 3000;
 
 console.log(`[SPMI UNPAL] Menyiapkan server Next.js (Mode: ${dev ? 'Development' : 'Production'})...`);
 
-const app = next({ dev, hostname, port });
+const app = next({ dev, hostname, port: typeof port === 'number' ? port : 3000 });
 const handle = app.getRequestHandler();
 
 app.prepare()
   .then(() => {
-    createServer(async (req, res) => {
+    const server = createServer(async (req, res) => {
       try {
         const parsedUrl = parse(req.url, true);
         await handle(req, res, parsedUrl);
@@ -33,15 +31,22 @@ app.prepare()
         res.statusCode = 500;
         res.end('Internal Server Error');
       }
-    })
-      .once('error', (err) => {
-        console.error('Server listen error:', err);
-        process.exit(1);
-      })
-      .listen(port, () => {
-        console.log(`[SPMI UNPAL] Server aktif dan mendengarkan pada http://${hostname}:${port}`);
-        console.log(`[SPMI UNPAL] Node.js version: ${process.version}`);
+    });
+
+    server.once('error', (err) => {
+      console.error('Server listen error:', err);
+      process.exit(1);
+    });
+
+    // Dukungan resmi Phusion Passenger di cPanel
+    if (typeof PhusionPassenger !== 'undefined') {
+      server.listen('passenger');
+      console.log('[SPMI UNPAL] Server aktif di bawah Phusion Passenger cPanel');
+    } else {
+      server.listen(port, () => {
+        console.log(`[SPMI UNPAL] Server aktif pada port: ${port}`);
       });
+    }
   })
   .catch((err) => {
     console.error('Failed to prepare Next.js app:', err);
