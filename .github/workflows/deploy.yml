@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -22,34 +23,28 @@ jobs:
       - name: 📦 Install Dependencies
         run: npm ci || npm install
 
-      - name: 🛠️ Build Next.js (Standalone Mode)
+      - name: 🛠️ Build Next.js
         env:
           NEXT_TELEMETRY_DISABLED: 1
           NODE_ENV: production
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
         run: npm run build
 
-      - name: 🚚 Deploy to cPanel via SSH & Rsync
-        uses: easingthemes/ssh-deploy@v5.0.0
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.CPANEL_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.CPANEL_HOST }}
-          REMOTE_PORT: ${{ secrets.CPANEL_PORT || '22' }}
-          REMOTE_USER: ${{ secrets.CPANEL_USERNAME }}
-          TARGET: ${{ secrets.CPANEL_APP_DIR }}
-          SOURCE: ".next/standalone/ .next/static public package.json"
-          EXCLUDE: "/node_modules/, /.git/"
+      - name: 🧹 Clean Dev & Webpack Cache
+        run: |
+          rm -rf .next/cache .next/dev || true
 
-      - name: 🔄 Restart Node.js Application on cPanel
-        uses: appleboy/ssh-action@v1.0.3
+      - name: 🚀 Deploy to cPanel via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          host: ${{ secrets.CPANEL_HOST }}
-          port: ${{ secrets.CPANEL_PORT || '22' }}
-          username: ${{ secrets.CPANEL_USERNAME }}
-          key: ${{ secrets.CPANEL_SSH_KEY }}
-          script: |
-            cd ${{ secrets.CPANEL_APP_DIR }}
-            mkdir -p .next/static
-            cp -r static/* .next/static/ 2>/dev/null || true
-            mkdir -p tmp && touch tmp/restart.txt
+          server: ${{ secrets.FTP_SERVER || 'cpanel.unpal.ac.id' }}
+          username: ${{ secrets.FTP_USERNAME || 'unpx1994' }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: spmi-app/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            .next/cache/**
+            .next/dev/**
+            *.zip
+            .env.local
