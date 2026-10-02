@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "db:push": "npx tsx src/lib/skema_database.ts",
+    "db:mysql-push": "node scripts/seed-mysql.mjs",
     "create:admin": "npx tsx scripts/create-admin.ts",
     "storage:sync": "npx tsx scripts/create-bucket.ts"
   },
@@ -26,6 +27,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.33.0",
+    "mysql2": "^3.24.5",
     "next": "16.3.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

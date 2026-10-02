@@ -1,0 +1,1619 @@
+{
+  "accreditations": [
+    {
+      "id": "acc_1787714544430",
+      "institution_or_program": "S1 Pendidikan Bahasa Inggris",
+      "level": "S1",
+      "faculty": "Fakultas Keguruan & Ilmu Pendidikan",
+      "rating": "Baik",
+      "sk_number": "426/SK/LAMDIK/Ak/S/X/2022",
+      "decree_date": "2022-10-13T17:00:00.000Z",
+      "expiry_date": "2027-10-12T17:00:00.000Z",
+      "status": "Aktif",
+      "accreditation_agency": "LAMDIK",
+      "certificate_url": "/uploads/accreditations/1787714454825_sertifikat_pendidikan_bahasa_inggris_2022.pdf",
+      "created_at": "2026-08-25T20:22:24.000Z"
+    },
+    {
+      "id": "acc_1787714698642",
+      "institution_or_program": "S1 Teknik Elektro",
+      "level": "S1",
+      "faculty": "Fakultas Teknik",
+      "rating": "Baik",
+      "sk_number": "0163/SK/LAM Teknik/AS/VIII/2023",
+      "decree_date": "2023-08-19T17:00:00.000Z",
+      "expiry_date": "2027-12-18T17:00:00.000Z",
+      "status": "Aktif",
+      "accreditation_agency": "LAM-TEKNIK",
+      "certificate_url": "/uploads/accreditations/1787714571243_sertifikat_teknik_elektro_2023.pdf",
+      "created_at": "2026-08-25T20:24:58.000Z"
+    },
+    {
+      "id": "acc_1787715990013",
+      "institution_or_program": "S1 Teknik Sipil",
+      "level": "S1",
+      "faculty": "Fakultas Teknik",
+      "rating": "Terakreditasi",
+      "sk_number": "No. 0903/SK/LAM Teknik/AS/XII/2025",
+      "decree_date": "2025-12-19T17:00:00.000Z",
+      "expiry_date": "2030-12-18T17:00:00.000Z",
+      "status": "Aktif",
+      "accreditation_agency": "LAM-TEKNIK",
+      "certificate_url": "/uploads/accreditations/1787715888797_sertifikat_teknik_sipil.pdf",
+      "created_at": "2026-08-25T20:46:29.000Z"
+    },
+    {
+      "id": "acc-inst-1",
+      "institution_or_program": "Universitas Palembang",
+      "level": "Institusi",
+      "faculty": "Universitas",
+      "rating": "Baik Sekali",
+      "sk_number": "83/SK/BAN-PT/Akred/PT/II/2021",
+      "decree_date": "2021-02-14T17:00:00.000Z",
+      "expiry_date": "2026-02-14T17:00:00.000Z",
+      "status": "Aktif",
+      "accreditation_agency": "BAN-PT",
+      "certificate_url": "/uploads/accreditations/1787714048579_sertifikat_unpal_2021.pdf",
+      "created_at": "2026-08-21T22:36:52.000Z"
+    },
+    {
+      "id": "acc-prodi-1",
+      "institution_or_program": "S1 Manajemen",
+      "level": "S1",
+      "faculty": "Fakultas Ekonomi & Bisnis",
+      "rating": "Baik Sekali",
+      "sk_number": "1824/DE/A.5/AR.10/XII/2024",
+      "decree_date": "2024-12-07T17:00:00.000Z",
+      "expiry_date": "2029-12-07T17:00:00.000Z",
+      "status": "Aktif",
+      "accreditation_agency": "LAMEMBA",
+      "certificate_url": "/uploads/accreditations/1787713816421_sertifikat_manajemen_2024.pdf",
+      "created_at": "2026-08-21T22:36:52.000Z"
+    },
+    {
+      "id": "acc-prodi-5",
+      "institution_or_program": "S1 Ilmu Hukum",
+      "level": "S1",
+      "faculty": "Fakultas Hukum",
+      "rating": "Baik",
+      "sk_number": "492/SK/BAN-PT/Ak.Ppj/S/II/2023",
+      "decree_date": "2023-02-19T17:00:00.000Z",
+      "expiry_date": "2028-02-19T17:00:00.000Z",
+      "status": "Aktif",
+      "accreditation_agency": "BAN-PT",
+      "certificate_url": "/uploads/accreditations/1787714155456_sertifikat_ilmu_hukum_2023.pdf",
+      "created_at": "2026-08-21T22:36:52.000Z"
+    },
+    {
+      "id": "acc-prodi-6",
+      "institution_or_program": "S1 Agroteknologi",
+      "level": "S1",
+      "faculty": "Fakultas Pertanian",
+      "rating": "Baik",
+      "sk_number": "8065/SK/BAN-PT/Ak.Ppj/S/X/2022",
+      "decree_date": "2022-10-30T17:00:00.000Z",
+      "expiry_date": "2027-10-30T17:00:00.000Z",
+      "status": "Aktif",
+      "accreditation_agency": "BAN-PT",
+      "certificate_url": "/uploads/accreditations/1787714341236_sertifikat_agroteknologi_2023.pdf",
+      "created_at": "2026-08-21T22:36:52.000Z"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc_1787640360493",
+      "title": "Ilmu Hukum",
+      "category": "Laporan AMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2024,
+      "description": "",
+      "file_url": "/uploads/documents/1787640352651_ilmu_hukum.pdf",
+      "file_size": "0.6 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787640608655",
+      "title": "UNIVERSITAS",
+      "category": "Laporan AMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2024,
+      "description": "",
+      "file_url": "/uploads/documents/1787640592467_universitas.pdf",
+      "file_size": "1.6 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787640721039",
+      "title": "Agroteknologi",
+      "category": "Laporan AMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2021,
+      "description": "",
+      "file_url": "/uploads/documents/1787640706766_agroteknologi.pdf",
+      "file_size": "1.0 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787640945899",
+      "title": "BAHASA INGGRIS",
+      "category": "Laporan AMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2021,
+      "description": "",
+      "file_url": "/uploads/documents/1787640928221_bahasa_inggris.pdf",
+      "file_size": "0.8 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787641022477",
+      "title": "Agroteknologi",
+      "category": "Laporan AMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2022,
+      "description": "",
+      "file_url": "/uploads/documents/1787641009833_agroteknologi.pdf",
+      "file_size": "1.0 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787641059356",
+      "title": "BAHASA INGGRIS",
+      "category": "Laporan AMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2022,
+      "description": "",
+      "file_url": "/uploads/documents/1787641042969_bahasa_inggris.pdf",
+      "file_size": "1.3 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787641095567",
+      "title": "Universitas",
+      "category": "Laporan AMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2022,
+      "description": "",
+      "file_url": "/uploads/documents/1787641076008_universitas.pdf",
+      "file_size": "1.6 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787641314261",
+      "title": "Teknik Elektro",
+      "category": "Laporan AMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2023,
+      "description": "",
+      "file_url": "/uploads/documents/1787641293231_teknik_elektro.pdf",
+      "file_size": "0.3 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787641398907",
+      "title": "Agroteknologi",
+      "category": "Laporan AMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2025,
+      "description": "",
+      "file_url": "/uploads/documents/1787641388221_agroteknologi.pdf",
+      "file_size": "1.0 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787641447448",
+      "title": "Teknik Sipil",
+      "category": "Laporan AMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2025,
+      "description": "",
+      "file_url": "/uploads/documents/1787641423869_teknik_sipil.pdf",
+      "file_size": "0.1 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787641490183",
+      "title": "Bahasa Inggris",
+      "category": "Laporan AMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2025,
+      "description": "",
+      "file_url": "/uploads/documents/1787641462486_bahasa_inggris.pdf",
+      "file_size": "0.2 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787641542692",
+      "title": "Universitas",
+      "category": "Laporan AMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2025,
+      "description": "",
+      "file_url": "/uploads/documents/1787641532039_universitas.pdf",
+      "file_size": "1.8 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787710647746",
+      "title": "FORMULIR SASARAN MUTU UNIVERSITAS PALEMBANG",
+      "category": "Formulir Mutu",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2024,
+      "description": "",
+      "file_url": "/uploads/documents/1787710609423_formulir_sasaran_mutu_universitas_palembang.pdf",
+      "file_size": "0.3 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787710717256",
+      "title": "KEBIJAKAN SPMI UNPAL",
+      "category": "Kebijakan SPMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2024,
+      "description": "",
+      "file_url": "/uploads/documents/1787710690859_kebijakan_spmi_unpal_2024.pdf",
+      "file_size": "2.9 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787710780917",
+      "title": "PENDOKUMENTASIAN IMPLEMENTASI SPMI",
+      "category": "Manual Mutu",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2024,
+      "description": "",
+      "file_url": "/uploads/documents/1787710746896_pendokumentasian_implementasi_spmi.pdf",
+      "file_size": "2.3 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787710837030",
+      "title": "BAHASA INGGRIS",
+      "category": "Dokumen RTM",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2021,
+      "description": "",
+      "file_url": "/uploads/documents/1787710822051_bahasa_inggris.pdf",
+      "file_size": "0.1 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787717416446",
+      "title": "Kelengkapan Dokumen-Teknik Sipil",
+      "category": "Formulir Mutu",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2024,
+      "description": "",
+      "file_url": "/uploads/documents/1787717387956_form_1-_kelengkapan_dokumen-teknik_sipil_2023.pdf",
+      "file_size": "0.1 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787717611240",
+      "title": "Laporan hasil Audit Teknik Sipil",
+      "category": "Laporan AMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2023,
+      "description": "",
+      "file_url": "/uploads/documents/1787717545804_form_6-_laporan_hasil_audit_-teknik_sipil.pdf",
+      "file_size": "0.1 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787717712564",
+      "title": "Kebijakan Spmi Universitas Palembang",
+      "category": "Kebijakan SPMI",
+      "standard_aspect": null,
+      "document_code": "035 A/433.0.1/VII/2024",
+      "year": 2024,
+      "description": "",
+      "file_url": "/uploads/documents/1787717653229_kebijakan_spmi_unpal_2024.pdf",
+      "file_size": "2.9 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787717916374",
+      "title": "PENDOKUMENTASIAN IMPLEMENTASI SPM",
+      "category": "Formulir Mutu",
+      "standard_aspect": null,
+      "document_code": "058.A/433.0.1/XI/2024",
+      "year": 2024,
+      "description": "",
+      "file_url": "/uploads/documents/1787717827785_pendokumentasian_implementasi_spmi.pdf",
+      "file_size": "2.3 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787718038641",
+      "title": "DAFTAR TILIK UNIVERSITAS PALEMBANG TAHUN",
+      "category": "Formulir Mutu",
+      "standard_aspect": null,
+      "document_code": "FM-AMI/02/00",
+      "year": 2024,
+      "description": "",
+      "file_url": "/uploads/documents/1787717967078_daftar_tilik_universitas_palembang_tahun_2024.pdf",
+      "file_size": "0.1 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787718486355",
+      "title": "BAHASA INGGRIS",
+      "category": "Dokumen RTM",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2021,
+      "description": "",
+      "file_url": "/uploads/documents/1787718426288_bahasa_inggris.pdf",
+      "file_size": "0.1 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    },
+    {
+      "id": "doc_1787718556713",
+      "title": "ILMU HUKUM",
+      "category": "Standar SPMI",
+      "standard_aspect": null,
+      "document_code": "-",
+      "year": 2021,
+      "description": "",
+      "file_url": "/uploads/documents/1787718526284_ilmu_hukum.pdf",
+      "file_size": "0.1 MB",
+      "download_count": 0,
+      "updated_at": "2026-10-02T08:35:14.000Z"
+    }
+  ],
+  "document_access_keys": [
+    {
+      "id": "key_1787542426144_8x33",
+      "code": "SPMI-VV7R82",
+      "label": "tes",
+      "created_at": "2026-08-23T20:33:46.000Z",
+      "expires_at": null,
+      "max_uses": null,
+      "used_count": 1,
+      "is_active": 1,
+      "created_by": "Administrator LPM",
+      "note": null
+    },
+    {
+      "id": "key_1787712633886_re86",
+      "code": "SPMI-ZHZ25Z",
+      "label": "asesor",
+      "created_at": "2026-08-25T19:50:33.000Z",
+      "expires_at": "2026-09-01T19:50:33.000Z",
+      "max_uses": null,
+      "used_count": 2,
+      "is_active": 1,
+      "created_by": "Administrator LPM",
+      "note": null
+    }
+  ],
+  "monitoring_data": [
+    {
+      "id": "mon-5",
+      "standard_name": "Standar Prestasi Kemahasiswaan Tingkat Nasional & Kepuasan Layanan Pembelajaran",
+      "category": "Kemahasiswaan",
+      "faculty": "Fakultas Hukum",
+      "study_program": "S1 Ilmu Hukum",
+      "target_score": "85.00",
+      "actual_score": "91.40",
+      "achievement_rate": "107.50",
+      "status": "Melampaui",
+      "audit_period": "2023/2024 Genap",
+      "findings_count": 1,
+      "resolved_findings": 1
+    },
+    {
+      "id": "mon-6",
+      "standard_name": "Standar Kualifikasi Dosen (Doktor S3 ≥ 40% & Lektor Kepala/Guru Besar ≥ 35%)",
+      "category": "Sumber Daya Manusia",
+      "faculty": "Fakultas Keguruan & Ilmu Pendidikan",
+      "study_program": "S1 Pendidikan Bahasa Inggris",
+      "target_score": "85.00",
+      "actual_score": "89.50",
+      "achievement_rate": "105.30",
+      "status": "Melampaui",
+      "audit_period": "2023/2024 Genap",
+      "findings_count": 2,
+      "resolved_findings": 2
+    },
+    {
+      "id": "mon-7",
+      "standard_name": "Standar Ketersediaan & Pemutakhiran Fasilitas Sarana Prasarana Laboratorium",
+      "category": "Sarana Prasarana",
+      "faculty": "Fakultas Teknik",
+      "study_program": "S1 Teknik Elektro",
+      "target_score": "85.00",
+      "actual_score": "87.00",
+      "achievement_rate": "102.40",
+      "status": "Tercapai",
+      "audit_period": "2023/2024 Genap",
+      "findings_count": 2,
+      "resolved_findings": 2
+    },
+    {
+      "id": "mon-8",
+      "standard_name": "Standar Transparansi & Akuntabilitas Alokasi Anggaran Keuangan Operasional",
+      "category": "Keuangan",
+      "faculty": "Universitas Palembang",
+      "study_program": "Biro Administrasi Keuangan",
+      "target_score": "85.00",
+      "actual_score": "90.00",
+      "achievement_rate": "105.90",
+      "status": "Melampaui",
+      "audit_period": "2023/2024 Genap",
+      "findings_count": 1,
+      "resolved_findings": 1
+    },
+    {
+      "id": "mon-9",
+      "standard_name": "Standar Kerjasama Strategis Nasional & Internasional (MoU & MoA Aktif)",
+      "category": "Kerja Sama",
+      "faculty": "Universitas Palembang",
+      "study_program": "Tingkat Institusi",
+      "target_score": "80.00",
+      "actual_score": "83.50",
+      "achievement_rate": "104.40",
+      "status": "Tercapai",
+      "audit_period": "2023/2024 Genap",
+      "findings_count": 3,
+      "resolved_findings": 3
+    }
+  ],
+  "regulations": [
+    {
+      "id": "reg_1787641711750",
+      "title": "Peraturan SPM UNPAL",
+      "regulation_number": "06.A/433.0.1/1/2024",
+      "category": "SK Rektor",
+      "year": 2024,
+      "description": "",
+      "file_url": "/uploads/regulations/1787641649939_peraturan_spm_unpal_2024.pdf",
+      "issued_by": "Rektor Universitas Palembang"
+    },
+    {
+      "id": "reg_1787641792453",
+      "title": "Peraturan Manajemen Resiko UNPAL",
+      "regulation_number": "075A/433.0.1/X/2025",
+      "category": "SK Rektor",
+      "year": 2025,
+      "description": "",
+      "file_url": "/uploads/regulations/1787641747200_peraturan_manajemen_risiko_unpal_2025.pdf",
+      "issued_by": "Rektor Universitas Palembang"
+    },
+    {
+      "id": "reg_1787641914879",
+      "title": "INSTRUMEN PEMANTAUAN DAN EVALUASI MUTU PERGURUAN TINGGI UNTUK PERPANJANGAN STATUS TERAKREDITASI MELALUI MEKANISME AUTOMASI",
+      "regulation_number": "NOMOR 5 TAHUN 2024",
+      "category": "SN-Dikti",
+      "year": 2024,
+      "description": "",
+      "file_url": "/uploads/regulations/1787641813836_perban-pt-5-2024-instrumen-pemutu-pt-untuk-perpanjangan-status-terakreditasi-pt.pdf",
+      "issued_by": "BAN-PT"
+    },
+    {
+      "id": "reg_1787642017309",
+      "title": "PERATURAN MENTERI PENDIDIKAN, KEBUDAYAAN, RISET, DAN TEKNOLOGI REPUBLIK INDONESIA",
+      "regulation_number": "NOMOR 53 TAHUN 2023",
+      "category": "Permendikbudristek",
+      "year": 2023,
+      "description": "",
+      "file_url": "/uploads/regulations/1787641937607_permendikbudridtek-no-53-tahun-2023.pdf",
+      "issued_by": "KEMENDIKBUD-RISTEK"
+    },
+    {
+      "id": "reg_1787718379920",
+      "title": "Pedoman AMI Universitas Palembang",
+      "regulation_number": "SK-REKTOR/2023",
+      "category": "Pedoman SPMI",
+      "year": 2023,
+      "description": "",
+      "file_url": "/uploads/regulations/1787718258214_pedoman_ami_universitas_palembang.pdf",
+      "issued_by": "Rektor Universitas Palembang"
+    }
+  ],
+  "contact_messages": [
+    {
+      "id": "msg-2",
+      "name": "Dra. Ratna Juwita, M.Si.",
+      "email": "ratna_juwita@gmail.com",
+      "phone": "085290182341",
+      "category": "Permohonan Dokumen",
+      "subject": "Permohonan Salinan Legalisir Sertifikat Akreditasi Institusi",
+      "message": "Mohon dibantu salinan digital legalisir sertifikat akreditasi institusi Universitas Palembang tahun 2023 dengan barcode resmi untuk kelengkapan administrasi beasiswa luar negeri.",
+      "created_at": "2026-08-19T22:36:52.000Z",
+      "status": "Selesai",
+      "reply_note": "Dokumen sertifikat berlegalisir resmi telah dikirim ke email pemohon."
+    },
+    {
+      "id": "msg-3",
+      "name": "Budi Santoso, S.T.",
+      "email": "budisantoso99@gmail.com",
+      "phone": "081399887766",
+      "category": "Pertanyaan Umum",
+      "subject": "Jadwal Siklus Audit Mutu Internal Periode Ganjil 2024/2025",
+      "message": "Halo admin SPMI, mohon info kapan instrumen formulir AMI untuk evaluasi semester ganjil dapat diunduh oleh unit kerja? Terima kasih.",
+      "created_at": "2026-08-20T22:36:52.000Z",
+      "status": "Baru",
+      "reply_note": null
+    }
+  ],
+  "org_members": [
+    {
+      "id": "org-1787633879121",
+      "name": "Ir. Yani Purwanti, MSi.",
+      "position": "Ketua",
+      "division": "Pimpinan Utama SPMI",
+      "email": null,
+      "photo_url": "/uploads/images/members/1787713183555_screenshot_2026-08-26_095828.png",
+      "nip": null,
+      "order": 1,
+      "created_at": "2026-08-24T21:57:59.000Z"
+    },
+    {
+      "id": "org-1787633920988",
+      "name": "Ir. Fitri Yetty Zairani, MP",
+      "position": "Wakil Ketua",
+      "division": "Pusat Audit & Evaluasi Mutu",
+      "email": null,
+      "photo_url": "/uploads/images/members/1787713064890_q.jpeg",
+      "nip": null,
+      "order": 2,
+      "created_at": "2026-08-24T21:58:41.000Z"
+    },
+    {
+      "id": "org-1787634098531",
+      "name": "Hartini Agustiawati, S.Pd, M.Pd",
+      "position": "Sekretaris",
+      "division": "Pimpinan Utama SPMI",
+      "email": null,
+      "photo_url": "/uploads/images/members/1787712826837_screenshot_2026-08-26_095301.png",
+      "nip": null,
+      "order": 3,
+      "created_at": "2026-08-24T22:01:38.000Z"
+    },
+    {
+      "id": "org-1787634221602",
+      "name": "Daeny Septi Yansuri, ST, MT",
+      "position": "Anggota",
+      "division": "Pusat Standar Mutu",
+      "email": null,
+      "photo_url": "/uploads/images/members/1787713093891_r.jpeg",
+      "nip": null,
+      "order": 4,
+      "created_at": "2026-08-24T22:03:41.000Z"
+    },
+    {
+      "id": "org-1787634247707",
+      "name": "dr.Ardiana Hidayah, SH, MH",
+      "position": "Anggota",
+      "division": "Pusat Standar Mutu",
+      "email": null,
+      "photo_url": "/uploads/images/members/1787712972228_screenshot_2026-08-26_095551.png",
+      "nip": null,
+      "order": 5,
+      "created_at": "2026-08-24T22:04:07.000Z"
+    },
+    {
+      "id": "org-1787634274039",
+      "name": " Tiara Eliza, S.Hum, MPd",
+      "position": "Anggota",
+      "division": "Pusat Standar Mutu",
+      "email": null,
+      "photo_url": "/uploads/images/members/1787712920408_screenshot_2026-08-26_095312.png",
+      "nip": null,
+      "order": 6,
+      "created_at": "2026-08-24T22:04:34.000Z"
+    }
+  ],
+  "pages_content": [
+    {
+      "id": "page-about",
+      "slug": "about",
+      "title": "Tentang Kami",
+      "subtitle": null,
+      "content": {
+        "misi": [
+          "Menyelenggarakan pendidikan tinggi untuk melaksanakan dan mengembangkan ilmu pengetahuan dan teknologi untuk menghasilkan lulusan yang memiliki kualifikasi akademik unggul, mampu bersaing dalam dunia kerja, dapat menghadapi tantangan dan menciptakan dunia kerja, memiliki kreatifitas dan inovasi serta berwawasan entrepreneur.",
+          "Menyelenggarakan dan mengembangkan kegiatan penelitian serta menghasilkan karya ilmiah yang relevan dengan perkembangan IPTEKS dan kebutuhan masyarakat.",
+          "Menyelenggarakan pengabdian kepada masyarakat melalui kegiatan pelayanan kepada masyarakat sesuai dengan pengembangan IPTEKS dan hasil penelitian yang dilaksanakan baik secara periodik maupun secara insidental.",
+          "Mengembangkan soft skill dan kompetensi akademik mahasiswa agar menghasilkan lulusan yang imajinatif, inovatif dan kompeten secara profesional serta berwawasan entrepreneur sehingga mampu bersaing untuk mendapatkan pekerjaan dan mampu menghadapi tantangan serta menciptakan lapangan kerja.",
+          "Menyelenggarakan tata pamong dan tata kelola yang baik dan benar menuju Good University Governance.",
+          "Mengembangkan sumberdaya manusia (SDM) yang mampu menunjang peningkatan kualitas pendidikan, penelitian dan pengabdian kepada masyarakat.",
+          "Menyelenggarakan kerjasama kemitraan yang saling menguntungkan dalam rangka meningkatkan kualitas SDM, mendukung sistem pendanaan dan pemanfaatan fasilitas untuk pelaksanaan kegiatan tri dharma perguruan tinggi serta membantu mitra dalam mendukung pelaksaan kegiatan kemitraan."
+        ],
+        "visi": "Visi SPMI Menjadi Universitas yang Unggul dalam Pendidikan Tinggi dan Berwawasan Entrepreneur tahun 2032.",
+        "tujuan": [
+          "Terwujudnya kepatuhan terhadap seluruh Standar Nasional Pendidikan Tinggi dan Standar Mutu Universitas Palembang.",
+          "Meningkatnya perolehan peringkat akreditasi Unggul bagi seluruh program studi dan institusi.",
+          "Terbangunnya budaya mutu kerja yang profesional, akuntabel, dan berorientasi pada kepuasan pemangku kepentingan."
+        ],
+        "tupoksi": [
+          {
+            "title": "Pusat Perencanaan dan Standar Mutu",
+            "points": [
+              "Merancang dan memutakhirkan 10 Aspek Standar Mutu SPMI.",
+              "Menyusun pedoman manual mutu siklus PPEPP.",
+              "Sosialisasi kebijakan mutu ke seluruh fakultas dan unit kerja."
+            ]
+          },
+          {
+            "title": "Pusat Audit dan Evaluasi Mutu (AMI)",
+            "points": [
+              "Menyelenggarakan Audit Mutu Internal berkala setiap semester.",
+              "Merekrut dan meningkatkan kompetensi auditor mutu internal.",
+              "Menyusun laporan hasil audit dan rekomendasi perbaikan."
+            ]
+          },
+          {
+            "title": "Pusat Akreditasi dan Asesmen",
+            "points": [
+              "Mendampingi penyusunan borang akreditasi BAN-PT dan LAM.",
+              "Simulasi asesmen lapangan dan validasi LED/LKPS.",
+              "Pemantauan masa berlaku dan perpanjangan SK akreditasi."
+            ]
+          }
+        ],
+        "budaya_mutu": [
+          {
+            "desc": "Menjunjung tinggi kejujuran akademik dan keterbukaan data evaluasi kinerja tridharma.",
+            "title": "Integritas & Akuntabilitas"
+          },
+          {
+            "desc": "Berorientasi pada peningkatan standar mutu secara terus menerus melalui siklus PPEPP.",
+            "title": "Perbaikan Berkelanjutan (Kaizen)"
+          },
+          {
+            "desc": "Bersinergi aktif mendampingi unit kerja dan program studi mencapai target akreditasi unggul.",
+            "title": "Kolaborasi & Pelayanan Prima"
+          }
+        ],
+        "maklumat_pelayanan": "Lembaga Penjaminan Mutu Internal (SPMI) Universitas Palembang berkomitmen memberikan pendampingan penjaminan mutu, fasilitasi akreditasi, dan audit internal secara independen, transparan, dan akuntabel demi terwujudnya tridharma perguruan tinggi berstandar unggul."
+      },
+      "updated_at": "2026-08-24T03:07:38.000Z"
+    },
+    {
+      "id": "page-home",
+      "slug": "home",
+      "title": "Halaman Beranda",
+      "subtitle": null,
+      "content": {
+        "stats": [
+          {
+            "id": 1,
+            "title": "Program Studi Terakreditasi",
+            "value": "100%",
+            "bgColor": "from-amber-500 to-yellow-500",
+            "icon_name": "Award",
+            "description": "Seluruh prodi telah terakreditasi BAN-PT & LAM"
+          },
+          {
+            "id": 2,
+            "title": "Dokumen Standar SPMI",
+            "value": "10 Standar",
+            "bgColor": "from-blue-500 to-indigo-500",
+            "icon_name": "FileText",
+            "description": "Pedoman PPEPP tridharma terintegrasi"
+          },
+          {
+            "id": 3,
+            "title": "Auditor Internal",
+            "value": "5 Auditor",
+            "bgColor": "from-emerald-500 to-teal-500",
+            "icon_name": "Users",
+            "description": "Auditor penjaminan mutu"
+          },
+          {
+            "id": 4,
+            "title": "Capaian Rata-Rata Mutu",
+            "value": "104.8%",
+            "bgColor": "from-purple-500 to-pink-500",
+            "icon_name": "BarChart3",
+            "description": "Hasil evaluasi Audit Mutu Internal 2024"
+          }
+        ],
+        "hero_badge": "Sistem Informasi Penjaminan Mutu Internal",
+        "hero_title": "Sistem Penjaminan Mutu Internal",
+        "hero_subtitle": "Mengawal standar keunggulan akademik, tata kelola tridharma perguruan tinggi yang akuntabel, serta budaya mutu berkelanjutan (PPEPP) menuju akreditasi unggul nasional dan internasional.",
+        "slider_images": [
+          "/uploads/images/banners/1787711485690_11.jpeg"
+        ],
+        "cta_banner_desc": "Lembaga Penjaminan Mutu Internal (SPMI) UNPAL siap memberikan pendampingan teknis LED, LKPS, instrumen AMI, serta fasilitasi borang akreditasi BAN-PT dan LAM.",
+        "cta_banner_title": "Siap Mengawal Akreditasi Unggul Program Studi Anda",
+        "hero_title_highlight": "Universitas Palembang",
+        "hero_cta_primary_text": "Jelajahi Dokumen Mutu",
+        "hero_cta_secondary_text": "Lihat Akreditasi"
+      },
+      "updated_at": "2026-10-02T08:35:15.000Z"
+    },
+    {
+      "id": "page-tupoksi",
+      "slug": "tupoksi",
+      "title": "Tugas Pokok & Fungsi SPMI",
+      "subtitle": "Mandat tata kelola penjaminan mutu internal universitas",
+      "content": {
+        "fungsi": [
+          "Penyusunan dokumen PPEPP",
+          "Fasilitasi akreditasi prodi",
+          "Pengawalan kepatuhan standar mutu"
+        ],
+        "tugas_pokok": "Merencanakan, melaksanakan, mengevaluasi, mengendalikan, dan meningkatkan standar mutu pendidikan tinggi di seluruh unit kerja Universitas Palembang."
+      },
+      "updated_at": "2026-08-21T22:15:35.000Z"
+    },
+    {
+      "id": "page-visi-misi",
+      "slug": "visi-misi",
+      "title": "Visi, Misi & Komitmen Mutu",
+      "subtitle": "Arah pengembangan mutu Universitas Palembang menuju perguruan tinggi unggul",
+      "content": {
+        "misi": [
+          "Menetapkan dan mengembangkan standar mutu tridharma perguruan tinggi yang adaptif.",
+          "Melaksanakan audit mutu internal (AMI) secara berkala, independen, dan profesional.",
+          "Mendorong peningkatan mutu berkelanjutan (Continuous Quality Improvement) berbasis budaya mutu sivitas akademika."
+        ],
+        "visi": "Menjadi Lembaga Penjaminan Mutu Internal yang kredibel, akuntabel, dan transformatif dalam mengawal Universitas Palembang menjadi perguruan tinggi unggul di tingkat nasional."
+      },
+      "updated_at": "2026-08-21T22:15:35.000Z"
+    }
+  ],
+  "users_admin": [
+    {
+      "id": "092f6c7c-db93-444f-8c5e-d4a43bc3a3ad",
+      "email": "superadmin@unpal.ac.id",
+      "full_name": "Super Administrator SPMI",
+      "name": "Super Administrator SPMI",
+      "role": "superadmin",
+      "faculty": "Lembaga Penjaminan Mutu (SPMI)",
+      "password_hash": "admin123",
+      "permissions": {
+        "users": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "content": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "messages": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "overview": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "documents": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "monitoring": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "regulations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "accreditations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        }
+      },
+      "nip": "198501012010011001",
+      "is_active": 1,
+      "last_login": "2026-08-26T02:46:00.000Z",
+      "created_at": "2026-08-23T17:00:00.000Z"
+    },
+    {
+      "id": "3c2f4160-9891-4db0-8dde-9f49a3558ac2",
+      "email": "admin@unpal.ac.id",
+      "full_name": "Admin SPMI Utama",
+      "name": "Admin SPMI Utama",
+      "role": "superadmin",
+      "faculty": "Lembaga Penjaminan Mutu (SPMI)",
+      "password_hash": "password",
+      "permissions": {
+        "users": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "content": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "messages": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "overview": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "documents": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "monitoring": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "regulations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "accreditations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        }
+      },
+      "nip": "197508122003121002",
+      "is_active": 1,
+      "last_login": null,
+      "created_at": "2026-08-23T17:00:00.000Z"
+    },
+    {
+      "id": "42b876ab-ac7c-4d28-85dd-df92e71434b4",
+      "email": "jemi@gmail.com",
+      "full_name": "jemiarian",
+      "name": "jemiarian",
+      "role": "superadmin",
+      "faculty": "Lembaga Penjaminan Mutu (LPM)",
+      "password_hash": "Jemi12345",
+      "permissions": {
+        "users": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "content": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "messages": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "overview": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "documents": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "monitoring": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "regulations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "accreditations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        }
+      },
+      "nip": "197508122003121002",
+      "is_active": 1,
+      "last_login": "2026-08-24T08:34:00.000Z",
+      "created_at": "2024-01-14T17:00:00.000Z"
+    },
+    {
+      "id": "4e5673a1-362a-4b39-8213-486d203f081f",
+      "email": "auditor.ami@unpal.ac.id",
+      "full_name": "Ir. Bambang Supeno, M.Eng.",
+      "name": "Ir. Bambang Supeno, M.Eng.",
+      "role": "auditor",
+      "faculty": "Pusat Audit Mutu Internal",
+      "password_hash": "auditor*unpal2025",
+      "permissions": {
+        "users": {
+          "edit": false,
+          "view": false,
+          "create": false,
+          "delete": false
+        },
+        "content": {
+          "edit": false,
+          "view": false,
+          "create": false,
+          "delete": false
+        },
+        "messages": {
+          "edit": false,
+          "view": false,
+          "create": false,
+          "delete": false
+        },
+        "overview": {
+          "edit": false,
+          "view": true,
+          "create": false,
+          "delete": false
+        },
+        "documents": {
+          "edit": false,
+          "view": true,
+          "create": false,
+          "delete": false
+        },
+        "monitoring": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": false
+        },
+        "regulations": {
+          "edit": false,
+          "view": true,
+          "create": false,
+          "delete": false
+        },
+        "accreditations": {
+          "edit": false,
+          "view": true,
+          "create": false,
+          "delete": false
+        }
+      },
+      "nip": "197211051998031003",
+      "is_active": 1,
+      "last_login": "2026-08-23T11:54:00.000Z",
+      "created_at": "2024-02-29T17:00:00.000Z"
+    },
+    {
+      "id": "6f2472cc-e0f5-4796-843a-bed965133d6c",
+      "email": "spmi@unpal.ac.id",
+      "full_name": "Staf Penjaminan Mutu",
+      "name": "Staf Penjaminan Mutu",
+      "role": "admin_spmi",
+      "faculty": "Lembaga Penjaminan Mutu (SPMI)",
+      "password_hash": "password",
+      "permissions": {
+        "users": {
+          "edit": false,
+          "view": false,
+          "create": false,
+          "delete": false
+        },
+        "content": {
+          "edit": false,
+          "view": true,
+          "create": false,
+          "delete": false
+        },
+        "messages": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": false
+        },
+        "overview": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": false
+        },
+        "documents": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "monitoring": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": false
+        },
+        "regulations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "accreditations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        }
+      },
+      "nip": "199002152015041003",
+      "is_active": 1,
+      "last_login": null,
+      "created_at": "2026-08-21T22:15:35.000Z"
+    },
+    {
+      "id": "717b5095-9513-4edd-a852-5357c82b748f",
+      "email": "pakjoni@unpal.ac.id",
+      "full_name": "Pak Joni",
+      "name": "Pak Joni",
+      "role": "superadmin",
+      "faculty": "Lembaga Penjaminan Mutu (SPMI)",
+      "password_hash": "Pakjoni!23",
+      "permissions": {
+        "users": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "content": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "messages": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "overview": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "documents": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "monitoring": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "regulations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "accreditations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        }
+      },
+      "nip": null,
+      "is_active": 1,
+      "last_login": "2026-08-24T06:29:00.000Z",
+      "created_at": "2026-08-23T17:00:00.000Z"
+    },
+    {
+      "id": "7a31b212-6a31-4433-b544-6239ce911b58",
+      "email": "bukyani@unpal.ac.id",
+      "full_name": "bukyani",
+      "name": "bukyani",
+      "role": "admin_spmi",
+      "faculty": "Lembaga Penjaminan Mutu (SPMI)",
+      "password_hash": "bukyani123",
+      "permissions": {
+        "users": {
+          "edit": false,
+          "view": false,
+          "create": false,
+          "delete": false
+        },
+        "content": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "messages": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "overview": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "documents": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "monitoring": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "regulations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "accreditations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        }
+      },
+      "nip": null,
+      "is_active": 1,
+      "last_login": "2026-08-24T19:07:00.000Z",
+      "created_at": "2026-08-23T17:00:00.000Z"
+    },
+    {
+      "id": "9173d3fe-5813-42b6-b4b4-8e78cf1de006",
+      "email": "test@unpal.ac.id",
+      "full_name": "test",
+      "name": "test",
+      "role": "admin_spmi",
+      "faculty": "Lembaga Penjaminan Mutu (SPMI)",
+      "password_hash": "test12345",
+      "permissions": {
+        "users": {
+          "edit": false,
+          "view": false,
+          "create": false,
+          "delete": false
+        },
+        "content": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "messages": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "overview": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "documents": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "monitoring": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "regulations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "accreditations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        }
+      },
+      "nip": null,
+      "is_active": 1,
+      "last_login": null,
+      "created_at": "2026-08-23T17:00:00.000Z"
+    },
+    {
+      "id": "943f5ead-e3ec-43e8-9355-44858c08fa93",
+      "email": "bukicha@unpal.ac.id",
+      "full_name": "buk icha",
+      "name": "buk icha",
+      "role": "admin_spmi",
+      "faculty": "Lembaga Penjaminan Mutu (SPMI)",
+      "password_hash": "bukicha!23",
+      "permissions": {
+        "users": {
+          "edit": false,
+          "view": false,
+          "create": false,
+          "delete": false
+        },
+        "content": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "messages": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "overview": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "documents": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "monitoring": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "regulations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "accreditations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        }
+      },
+      "nip": null,
+      "is_active": 1,
+      "last_login": "2026-08-24T09:45:00.000Z",
+      "created_at": "2026-08-23T17:00:00.000Z"
+    },
+    {
+      "id": "b521fc16-cf49-46e2-a0cf-68b87a70ed0c",
+      "email": "rektorat@unpal.ac.id",
+      "full_name": "Prof. Dr. Ir. H. Rektor UNPAL, M.Sc.",
+      "name": "Prof. Dr. Ir. H. Rektor UNPAL, M.Sc.",
+      "role": "pimpinan",
+      "faculty": "Rektorat Universitas Palembang",
+      "password_hash": "rektor*unpal2025",
+      "permissions": {
+        "users": {
+          "edit": false,
+          "view": false,
+          "create": false,
+          "delete": false
+        },
+        "content": {
+          "edit": false,
+          "view": false,
+          "create": false,
+          "delete": false
+        },
+        "messages": {
+          "edit": false,
+          "view": false,
+          "create": false,
+          "delete": false
+        },
+        "overview": {
+          "edit": false,
+          "view": true,
+          "create": false,
+          "delete": false
+        },
+        "documents": {
+          "edit": false,
+          "view": true,
+          "create": false,
+          "delete": false
+        },
+        "monitoring": {
+          "edit": false,
+          "view": true,
+          "create": false,
+          "delete": false
+        },
+        "regulations": {
+          "edit": false,
+          "view": true,
+          "create": false,
+          "delete": false
+        },
+        "accreditations": {
+          "edit": false,
+          "view": true,
+          "create": false,
+          "delete": false
+        }
+      },
+      "nip": "196803201992031001",
+      "is_active": 1,
+      "last_login": "2026-08-23T11:55:00.000Z",
+      "created_at": "2023-12-31T17:00:00.000Z"
+    },
+    {
+      "id": "d6acefec-7716-44af-b074-474f0586a7a4",
+      "email": "test2@unpal.ac.id",
+      "full_name": "test2",
+      "name": "test2",
+      "role": "superadmin",
+      "faculty": "Lembaga Penjaminan Mutu (SPMI)",
+      "password_hash": "test2@unpal.ac.id",
+      "permissions": {
+        "users": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "content": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "messages": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "overview": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "documents": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "monitoring": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "regulations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "accreditations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        }
+      },
+      "nip": null,
+      "is_active": 1,
+      "last_login": "2026-08-24T08:25:00.000Z",
+      "created_at": "2026-08-23T17:00:00.000Z"
+    },
+    {
+      "id": "e3f7193e-f5e8-42c5-bd72-8a0ff1d2c600",
+      "email": "user1@gmail.com",
+      "full_name": "user1",
+      "name": "user1",
+      "role": "admin_spmi",
+      "faculty": "Lembaga Penjaminan Mutu (SPMI)",
+      "password_hash": "User12345",
+      "permissions": {
+        "users": {
+          "edit": false,
+          "view": false,
+          "create": false,
+          "delete": false
+        },
+        "content": {
+          "edit": false,
+          "view": false,
+          "create": false,
+          "delete": false
+        },
+        "messages": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "overview": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "documents": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "monitoring": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "regulations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "accreditations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        }
+      },
+      "nip": null,
+      "is_active": 1,
+      "last_login": "2026-08-23T12:30:00.000Z",
+      "created_at": "2026-08-22T17:00:00.000Z"
+    },
+    {
+      "id": "fba43b8a-4a7e-4118-8377-59c00dda6c56",
+      "email": "spmi.dokumen@unpal.ac.id",
+      "full_name": "Dr. Hj. Siti Fatimah, S.Pd., M.Si.",
+      "name": "Dr. Hj. Siti Fatimah, S.Pd., M.Si.",
+      "role": "admin_spmi",
+      "faculty": "Pusat Standarisasi & Akreditasi",
+      "password_hash": "dokumen*unpal2025",
+      "permissions": {
+        "users": {
+          "edit": false,
+          "view": false,
+          "create": false,
+          "delete": false
+        },
+        "content": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": false
+        },
+        "messages": {
+          "edit": true,
+          "view": true,
+          "create": false,
+          "delete": true
+        },
+        "overview": {
+          "edit": false,
+          "view": true,
+          "create": false,
+          "delete": false
+        },
+        "documents": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "monitoring": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": false
+        },
+        "regulations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        },
+        "accreditations": {
+          "edit": true,
+          "view": true,
+          "create": true,
+          "delete": true
+        }
+      },
+      "nip": "198004152006042001",
+      "is_active": 1,
+      "last_login": "2026-08-23T12:31:00.000Z",
+      "created_at": "2024-02-09T17:00:00.000Z"
+    }
+  ]
+}

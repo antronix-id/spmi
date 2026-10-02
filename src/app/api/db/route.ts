@@ -1,26 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Pool } from 'pg';
+import { getMysqlPool } from '@/lib/mysql';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-// Singleton PostgreSQL connection pool for Next.js API Route
-let pool: Pool | null = null;
+// Sanitize table name to prevent SQL injection
+const ALLOWED_TABLES = [
+  'accreditations',
+  'documents',
+  'document_access_keys',
+  'monitoring_data',
+  'regulations',
+  'contact_messages',
+  'org_members',
+  'pages_content',
+  'users_admin'
+];
 
-function getPool() {
-  if (!pool) {
-    const connectionString = process.env.DATABASE_URL || '';
-    if (!connectionString) return null;
-    
-    pool = new Pool({
-      connectionString,
-      ssl: connectionString.includes('localhost') || connectionString.includes('127.0.0.1')
-        ? false
-        : { rejectUnauthorized: false }
-    });
-  }
-  return pool;
-}
+const DEFAULT_ORDERS: Record<string, string> = {
+  accreditations: 'ORDER BY `level` ASC',
+  documents: 'ORDER BY `year` DESC, `updated_at` DESC',
+  monitoring_data: 'ORDER BY `audit_period` DESC',
+  regulations: 'ORDER BY `year` DESC',
+  contact_messages: 'ORDER BY `created_at` DESC',
+  org_members: 'ORDER BY `order` ASC, `created_at` ASC',
+  document_access_keys: 'ORDER BY `created_at` DESC',
+  pages_content: 'ORDER BY `updated_at` DESC',
+  users_admin: 'ORDER BY `created_at` DESC'
+};
 
 // GET: Fetch records from a table
 export async function GET(request: NextRequest) {
@@ -32,84 +39,100 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Parameter table wajib disertakan' }, { status: 400 });
     }
 
-    const p = getPool();
-    if (!p) {
-      return NextResponse.json({ error: 'DATABASE_URL belum dikonfigurasi' }, { status: 500 });
-    }
-
-    // Sanitize table name to prevent SQL injection
-    const allowedTables = [
-      'accreditations',
-      'documents',
-      'document_access_keys',
-      'monitoring_data',
-      'regulations',
-      'contact_messages',
-      'pages_content',
-      'users_admin'
-    ];
-
-    if (!allowedTables.includes(table)) {
+    if (!ALLOWED_TABLES.includes(table)) {
       return NextResponse.json({ error: 'Tabel tidak diizinkan' }, { status: 403 });
     }
 
-    const result = await p.query(`SELECT * FROM "${table}"`);
-    return NextResponse.json({ success: true, data: result.rows });
+    const pool = getMysqlPool();
+    if (!pool) {
+      return NextResponse.json({ error: 'Koneksi MySQL belum dikonfigurasi' }, { status: 500 });
+    }
+
+    const orderClause = DEFAULT_ORDERS[table] || '';
+    const query = `SELECT * FROM \`${table}\` ${orderClause}`.trim();
+    
+    const [rows] = await pool.query(query);
+
+    // Normalisasi boolean dan format data jika diperlukan
+    const data = (rows as any[]).map(row => {
+      const formatted = { ...row };
+      // Boolean convert from TINYINT (1/0)
+      if ('is_active' in formatted) {
+        formatted.is_active = Boolean(formatted.is_active);
+      }
+      return formatted;
+    });
+
+    return NextResponse.json({ success: true, data });
   } catch (err: any) {
-    console.error('Database GET error:', err);
+    console.error('MySQL GET error:', err);
     return NextResponse.json({ error: err.message || 'Database query failed' }, { status: 500 });
   }
 }
 
-// POST: Insert or Upsert record
+// POST: Insert, Upsert, or Delete record
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { table, item, action, id } = body;
 
-    const p = getPool();
-    if (!p) {
-      return NextResponse.json({ error: 'DATABASE_URL belum dikonfigurasi' }, { status: 500 });
+    if (!table || !ALLOWED_TABLES.includes(table)) {
+      return NextResponse.json({ error: 'Tabel tidak diizinkan atau tidak valid' }, { status: 403 });
     }
 
-    const allowedTables = [
-      'accreditations',
-      'documents',
-      'document_access_keys',
-      'monitoring_data',
-      'regulations',
-      'contact_messages',
-      'pages_content',
-      'users_admin'
-    ];
-
-    if (!allowedTables.includes(table)) {
-      return NextResponse.json({ error: 'Tabel tidak diizinkan' }, { status: 403 });
+    const pool = getMysqlPool();
+    if (!pool) {
+      return NextResponse.json({ error: 'Koneksi MySQL belum dikonfigurasi' }, { status: 500 });
     }
 
+    // Action: DELETE
     if (action === 'delete') {
-      await p.query(`DELETE FROM "${table}" WHERE id = $1`, [id]);
+      if (!id) {
+        return NextResponse.json({ error: 'ID wajib disertakan untuk action delete' }, { status: 400 });
+      }
+      await pool.query(`DELETE FROM \`${table}\` WHERE \`id\` = ?`, [id]);
       return NextResponse.json({ success: true });
     }
 
-    // Dynamic Upsert for PostgreSQL
+    // Action: INSERT or UPSERT
+    if (!item || typeof item !== 'object') {
+      return NextResponse.json({ error: 'Data item wajib disertakan' }, { status: 400 });
+    }
+
     const keys = Object.keys(item);
-    const values = Object.values(item);
-    const columns = keys.map(k => `"${k}"`).join(', ');
-    const placeholders = keys.map((_, i) => `$${i + 1}`).join(', ');
-    const updateSets = keys.map(k => `"${k}" = EXCLUDED."${k}"`).join(', ');
+    if (keys.length === 0) {
+      return NextResponse.json({ error: 'Item tidak memiliki kolom' }, { status: 400 });
+    }
+
+    const columns = keys.map(k => `\`${k}\``).join(', ');
+    const placeholders = keys.map(() => '?').join(', ');
+    const updateSets = keys
+      .filter(k => k !== 'id')
+      .map(k => `\`${k}\` = VALUES(\`${k}\`)`)
+      .join(', ');
+
+    const values = keys.map(k => {
+      const val = item[k];
+      if (val === undefined || val === null) return null;
+      if (typeof val === 'boolean') return val ? 1 : 0;
+      if (typeof val === 'object') {
+        if (val instanceof Date) return val.toISOString().slice(0, 19).replace('T', ' ');
+        return JSON.stringify(val);
+      }
+      return val;
+    });
 
     const query = `
-      INSERT INTO "${table}" (${columns})
+      INSERT INTO \`${table}\` (${columns})
       VALUES (${placeholders})
-      ON CONFLICT (id) DO UPDATE SET
-        ${updateSets}
+      ON DUPLICATE KEY UPDATE
+        ${updateSets || '`id` = VALUES(`id`)'}
     `;
 
-    await p.query(query, values);
+    await pool.query(query, values);
     return NextResponse.json({ success: true, item });
   } catch (err: any) {
-    console.error('Database POST error:', err);
+    console.error('MySQL POST error:', err);
     return NextResponse.json({ error: err.message || 'Database write failed' }, { status: 500 });
   }
 }
