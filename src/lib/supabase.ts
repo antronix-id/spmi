@@ -58,12 +58,73 @@ const STORAGE_KEYS = {
   AUTH_SESSION: 'spmi_admin_auth_user',
 };
 
+// API Helper untuk query langsung ke server MySQL via /api/db
+async function apiFetch<T>(table: string, params: Record<string, string> = {}): Promise<T[] | null> {
+  if (typeof window === 'undefined') return null;
+  try {
+    const query = new URLSearchParams({ table, ...params }).toString();
+    const res = await fetch(`/api/db?${query}`, { cache: 'no-store' });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        return json.data as T[];
+      }
+    }
+  } catch (err) {
+    console.warn(`[dataService] Error calling /api/db for ${table}:`, err);
+  }
+  return null;
+}
+
+async function apiSaveItem<T>(table: string, item: T): Promise<boolean> {
+  if (typeof window === 'undefined') return false;
+  try {
+    const res = await fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ table, item })
+    });
+    if (res.ok) {
+      const json = await res.json();
+      return Boolean(json.success);
+    }
+  } catch (err) {
+    console.warn(`[dataService] Error saving to /api/db for ${table}:`, err);
+  }
+  return false;
+}
+
+async function apiDeleteItem(table: string, id: string): Promise<boolean> {
+  if (typeof window === 'undefined') return false;
+  try {
+    const res = await fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ table, action: 'delete', id })
+    });
+    if (res.ok) {
+      const json = await res.json();
+      return Boolean(json.success);
+    }
+  } catch (err) {
+    console.warn(`[dataService] Error deleting from /api/db for ${table}:`, err);
+  }
+  return false;
+}
+
 // Data service helpers with automatic fallback to mock/local persistence
 export const dataService = {
   // ==========================================
   // 1. ACCREDITATIONS (AKREDITASI)
   // ==========================================
   async getAccreditations(): Promise<Accreditation[]> {
+    const dbData = await apiFetch<Accreditation>('accreditations');
+    if (dbData && dbData.length > 0) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEYS.ACCREDITATIONS, JSON.stringify(dbData));
+      }
+      return dbData;
+    }
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('accreditations').select('*').order('level');
@@ -86,6 +147,7 @@ export const dataService = {
   },
 
   async saveAccreditation(item: Accreditation): Promise<boolean> {
+    await apiSaveItem('accreditations', item);
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('accreditations').upsert(item);
@@ -111,6 +173,7 @@ export const dataService = {
   },
 
   async deleteAccreditation(id: string): Promise<boolean> {
+    await apiDeleteItem('accreditations', id);
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('accreditations').delete().eq('id', id);
@@ -132,6 +195,13 @@ export const dataService = {
   // 2. DOCUMENTS (DOKUMEN SPMI)
   // ==========================================
   async getDocuments(): Promise<SpmiDocument[]> {
+    const dbData = await apiFetch<SpmiDocument>('documents');
+    if (dbData && dbData.length > 0) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEYS.DOCUMENTS, JSON.stringify(dbData));
+      }
+      return dbData;
+    }
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('documents').select('*').order('year', { ascending: false });
@@ -166,15 +236,19 @@ export const dataService = {
       updated_at: item.updated_at ? item.updated_at.split('T')[0] : new Date().toISOString().split('T')[0]
     };
 
+    const dbPayload = {
+      ...formattedItem,
+      document_code: formattedItem.document_code?.trim() || null,
+      standard_aspect: formattedItem.standard_aspect || null,
+    };
+
+    // Simpan ke MySQL API
+    await apiSaveItem('documents', dbPayload);
+
     let success = false;
 
     if (isSupabaseConfigured && supabase) {
       try {
-        const dbPayload = {
-          ...formattedItem,
-          document_code: formattedItem.document_code?.trim() || null,
-          standard_aspect: formattedItem.standard_aspect || null,
-        };
         const { error } = await supabase.from('documents').upsert(dbPayload);
         if (!error) {
           success = true;
@@ -214,6 +288,7 @@ export const dataService = {
   },
 
   async deleteDocument(id: string): Promise<boolean> {
+    await apiDeleteItem('documents', id);
     let success = false;
     if (isSupabaseConfigured && supabase) {
       try {
@@ -244,6 +319,14 @@ export const dataService = {
   // 2B. DOCUMENT ACCESS KEYS (KODE AKSES DOKUMEN SPMI)
   // ==========================================
   async getDocumentAccessKeys(): Promise<DocumentAccessKey[]> {
+    const dbData = await apiFetch<DocumentAccessKey>('document_access_keys');
+    if (dbData && dbData.length > 0) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEYS.DOCUMENT_ACCESS_KEYS, JSON.stringify(dbData));
+      }
+      return dbData;
+    }
+
     let supabaseKeys: DocumentAccessKey[] = [];
     if (isSupabaseConfigured && supabase) {
       try {
@@ -288,6 +371,7 @@ export const dataService = {
   },
 
   async saveDocumentAccessKey(item: DocumentAccessKey): Promise<boolean> {
+    await apiSaveItem('document_access_keys', item);
     if (isSupabaseConfigured && supabase) {
       try {
         await supabase.from('document_access_keys').upsert(item);
@@ -311,6 +395,7 @@ export const dataService = {
   },
 
   async deleteDocumentAccessKey(id: string): Promise<boolean> {
+    await apiDeleteItem('document_access_keys', id);
     if (isSupabaseConfigured && supabase) {
       try {
         await supabase.from('document_access_keys').delete().eq('id', id);
@@ -401,6 +486,13 @@ export const dataService = {
   // 3. MONITORING DATA (PEMANTAUAN SPMI)
   // ==========================================
   async getMonitoringData(): Promise<MonitoringData[]> {
+    const dbData = await apiFetch<MonitoringData>('monitoring_data');
+    if (dbData && dbData.length > 0) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEYS.MONITORING, JSON.stringify(dbData));
+      }
+      return dbData;
+    }
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('monitoring_data').select('*');
@@ -423,6 +515,7 @@ export const dataService = {
   },
 
   async saveMonitoringData(item: MonitoringData): Promise<boolean> {
+    await apiSaveItem('monitoring_data', item);
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('monitoring_data').upsert(item);
@@ -448,6 +541,7 @@ export const dataService = {
   },
 
   async deleteMonitoringData(id: string): Promise<boolean> {
+    await apiDeleteItem('monitoring_data', id);
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('monitoring_data').delete().eq('id', id);
@@ -469,6 +563,13 @@ export const dataService = {
   // 4. REGULATIONS (PERATURAN & REGULASI)
   // ==========================================
   async getRegulations(): Promise<Regulation[]> {
+    const dbData = await apiFetch<Regulation>('regulations');
+    if (dbData && dbData.length > 0) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEYS.REGULATIONS, JSON.stringify(dbData));
+      }
+      return dbData;
+    }
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('regulations').select('*').order('year', { ascending: false });
@@ -491,6 +592,7 @@ export const dataService = {
   },
 
   async saveRegulation(item: Regulation): Promise<boolean> {
+    await apiSaveItem('regulations', item);
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('regulations').upsert(item);
@@ -516,6 +618,7 @@ export const dataService = {
   },
 
   async deleteRegulation(id: string): Promise<boolean> {
+    await apiDeleteItem('regulations', id);
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('regulations').delete().eq('id', id);
@@ -537,6 +640,13 @@ export const dataService = {
   // 5. CONTACT MESSAGES (KOTAK MASUK PESAN)
   // ==========================================
   async getMessages(): Promise<ContactMessage[]> {
+    const dbData = await apiFetch<ContactMessage>('contact_messages');
+    if (dbData && dbData.length > 0) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(dbData));
+      }
+      return dbData;
+    }
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('contact_messages').select('*').order('created_at', { ascending: false });
@@ -566,6 +676,8 @@ export const dataService = {
       status: 'Baru'
     };
 
+    await apiSaveItem('contact_messages', newMsg);
+
     if (isSupabaseConfigured && supabase) {
       try {
         await supabase.from('contact_messages').insert(newMsg);
@@ -584,6 +696,7 @@ export const dataService = {
   },
 
   async updateMessageStatus(id: string, status: 'Baru' | 'Diproses' | 'Selesai', reply_note?: string): Promise<boolean> {
+    await apiSaveItem('contact_messages', { id, status, reply_note });
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('contact_messages').update({ status, reply_note }).eq('id', id);
@@ -602,6 +715,7 @@ export const dataService = {
   },
 
   async deleteMessage(id: string): Promise<boolean> {
+    await apiDeleteItem('contact_messages', id);
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('contact_messages').delete().eq('id', id);
@@ -749,6 +863,22 @@ export const dataService = {
   // 7. CONTENT MANAGEMENT (CMS)
   // ==========================================
   async getAboutContent(): Promise<AboutPageContent> {
+    const dbData = await apiFetch<any>('pages_content', { slug: 'about' });
+    if (dbData && dbData.length > 0 && dbData[0]?.content) {
+      const contentObj = typeof dbData[0].content === 'string' ? JSON.parse(dbData[0].content) : dbData[0].content;
+      if (contentObj && typeof contentObj === 'object') {
+        const res = {
+          ...initialAboutContent,
+          ...contentObj,
+          misi: Array.isArray(contentObj.misi) ? contentObj.misi : initialAboutContent.misi,
+          tujuan: Array.isArray(contentObj.tujuan) ? contentObj.tujuan : initialAboutContent.tujuan,
+          tupoksi: Array.isArray(contentObj.tupoksi) ? contentObj.tupoksi : initialAboutContent.tupoksi,
+          budaya_mutu: Array.isArray(contentObj.budaya_mutu) ? contentObj.budaya_mutu : initialAboutContent.budaya_mutu,
+        };
+        if (typeof window !== 'undefined') localStorage.setItem(STORAGE_KEYS.CONTENT_ABOUT, JSON.stringify(res));
+        return res;
+      }
+    }
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('pages_content').select('*').eq('slug', 'about').single();
@@ -791,6 +921,13 @@ export const dataService = {
   },
 
   async saveAboutContent(content: AboutPageContent): Promise<boolean> {
+    await apiSaveItem('pages_content', {
+      id: 'page-about',
+      slug: 'about',
+      title: 'Tentang Kami',
+      content,
+      updated_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+    });
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('pages_content').upsert({
@@ -813,6 +950,20 @@ export const dataService = {
   },
 
   async getHomeContent(): Promise<HomePageContent> {
+    const dbData = await apiFetch<any>('pages_content', { slug: 'home' });
+    if (dbData && dbData.length > 0 && dbData[0]?.content) {
+      const contentObj = typeof dbData[0].content === 'string' ? JSON.parse(dbData[0].content) : dbData[0].content;
+      if (contentObj && typeof contentObj === 'object') {
+        const res = {
+          ...initialHomeContent,
+          ...contentObj,
+          stats: Array.isArray(contentObj.stats) && contentObj.stats.length > 0 ? contentObj.stats : initialHomeContent.stats,
+          slider_images: Array.isArray(contentObj.slider_images) ? contentObj.slider_images : (initialHomeContent.slider_images || []),
+        };
+        if (typeof window !== 'undefined') localStorage.setItem(STORAGE_KEYS.CONTENT_HOME, JSON.stringify(res));
+        return res;
+      }
+    }
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('pages_content').select('*').eq('slug', 'home').single();
@@ -851,6 +1002,13 @@ export const dataService = {
   },
 
   async saveHomeContent(content: HomePageContent): Promise<boolean> {
+    await apiSaveItem('pages_content', {
+      id: 'page-home',
+      slug: 'home',
+      title: 'Halaman Beranda',
+      content,
+      updated_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+    });
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('pages_content').upsert({
@@ -873,6 +1031,18 @@ export const dataService = {
   },
 
   async getContactContent(): Promise<ContactPageContent> {
+    const dbData = await apiFetch<any>('pages_content', { slug: 'contact' });
+    if (dbData && dbData.length > 0 && dbData[0]?.content) {
+      const contentObj = typeof dbData[0].content === 'string' ? JSON.parse(dbData[0].content) : dbData[0].content;
+      if (contentObj && typeof contentObj === 'object') {
+        const res = {
+          ...initialContactContent,
+          ...contentObj
+        };
+        if (typeof window !== 'undefined') localStorage.setItem(STORAGE_KEYS.CONTENT_CONTACT, JSON.stringify(res));
+        return res;
+      }
+    }
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('pages_content').select('*').eq('slug', 'contact').single();
@@ -907,6 +1077,13 @@ export const dataService = {
   },
 
   async saveContactContent(content: ContactPageContent): Promise<boolean> {
+    await apiSaveItem('pages_content', {
+      id: 'page-contact',
+      slug: 'contact',
+      title: 'Kontak & Informasi',
+      content,
+      updated_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+    });
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('pages_content').upsert({
@@ -932,6 +1109,13 @@ export const dataService = {
   // 8. ORGANIZATION MEMBERS (STRUKTUR ORGANISASI)
   // ==========================================
   async getOrgMembers(): Promise<OrganizationMember[]> {
+    const dbData = await apiFetch<OrganizationMember>('org_members');
+    if (dbData && dbData.length > 0) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEYS.ORG_MEMBERS, JSON.stringify(dbData));
+      }
+      return dbData;
+    }
     if (isSupabaseConfigured && supabase) {
       try {
         const { data, error } = await supabase.from('org_members').select('*').order('order');
@@ -953,6 +1137,7 @@ export const dataService = {
   },
 
   async saveOrgMember(member: OrganizationMember): Promise<boolean> {
+    await apiSaveItem('org_members', member);
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('org_members').upsert(member);
@@ -979,6 +1164,7 @@ export const dataService = {
   },
 
   async deleteOrgMember(id: string): Promise<boolean> {
+    await apiDeleteItem('org_members', id);
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase.from('org_members').delete().eq('id', id);
@@ -1000,6 +1186,32 @@ export const dataService = {
   // 9. ADMIN USERS & AUTHENTICATION
   // ==========================================
   async getUsers(): Promise<AdminUser[]> {
+    const dbData = await apiFetch<any>('users_admin');
+    if (dbData && dbData.length > 0) {
+      const mysqlUsers: AdminUser[] = dbData.map((item: any) => {
+        const role = (item.role || 'superadmin') as AdminRole;
+        const isSuper = role === 'superadmin';
+        return {
+          id: item.id,
+          name: item.name || item.full_name || 'Administrator',
+          email: (item.email || '').toLowerCase().trim(),
+          password: item.password_hash || item.password || 'admin123',
+          role: role,
+          role_label: item.role_label || (isSuper ? 'Super Administrator' : 'Administrator SPMI'),
+          nip: item.nip || '',
+          unit_fakultas: item.faculty || item.unit_fakultas || 'Lembaga Penjaminan Mutu (SPMI)',
+          avatar_url: item.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
+          is_active: item.is_active !== undefined ? Boolean(item.is_active) : true,
+          permissions: item.permissions || getDefaultPermissions(role),
+          last_login: item.last_login || '',
+          created_at: item.created_at ? String(item.created_at).substring(0, 10) : new Date().toISOString().substring(0, 10)
+        };
+      });
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(mysqlUsers));
+      }
+      return mysqlUsers;
+    }
     if (isSupabaseConfigured && supabase) {
       try {
         const { data: uData, error: uError } = await supabase
@@ -1110,6 +1322,22 @@ export const dataService = {
       email: cleanEmail
     };
 
+    // Simpan ke MySQL API
+    await apiSaveItem('users_admin', {
+      id: cleanUser.id,
+      name: cleanUser.name,
+      full_name: cleanUser.name,
+      email: cleanUser.email,
+      role: cleanUser.role,
+      faculty: cleanUser.unit_fakultas || 'Lembaga Penjaminan Mutu (SPMI)',
+      password_hash: cleanUser.password || 'admin123',
+      permissions: cleanUser.permissions || getDefaultPermissions(cleanUser.role),
+      nip: cleanUser.nip || null,
+      is_active: cleanUser.is_active !== undefined ? Boolean(cleanUser.is_active) : true,
+      created_at: cleanUser.created_at || new Date().toISOString().slice(0, 19).replace('T', ' '),
+      last_login: cleanUser.last_login || null
+    });
+
     if (isSupabaseConfigured && supabase) {
       try {
         // Cek apakah user dengan email ini sudah ada di Supabase untuk sinkronisasi UUID ID
@@ -1169,6 +1397,7 @@ export const dataService = {
   },
 
   async deleteUser(id: string): Promise<boolean> {
+    await apiDeleteItem('users_admin', id);
     if (isSupabaseConfigured && supabase) {
       try {
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

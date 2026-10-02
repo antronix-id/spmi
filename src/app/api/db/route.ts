@@ -34,6 +34,8 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const table = searchParams.get('table');
+    const slug = searchParams.get('slug');
+    const id = searchParams.get('id');
 
     if (!table) {
       return NextResponse.json({ error: 'Parameter table wajib disertakan' }, { status: 400 });
@@ -48,17 +50,40 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Koneksi MySQL belum dikonfigurasi' }, { status: 500 });
     }
 
-    const orderClause = DEFAULT_ORDERS[table] || '';
-    const query = `SELECT * FROM \`${table}\` ${orderClause}`.trim();
-    
-    const [rows] = await pool.query(query);
+    const whereConditions: string[] = [];
+    const params: any[] = [];
 
-    // Normalisasi boolean dan format data jika diperlukan
+    if (slug) {
+      whereConditions.push('`slug` = ?');
+      params.push(slug);
+    }
+    if (id) {
+      whereConditions.push('`id` = ?');
+      params.push(id);
+    }
+
+    const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+    const orderClause = whereConditions.length > 0 ? '' : (DEFAULT_ORDERS[table] || '');
+    const query = `SELECT * FROM \`${table}\` ${whereClause} ${orderClause}`.trim();
+    
+    const [rows] = await pool.query(query, params);
+
+    // Normalisasi data (boolean dan JSON parsing jika string)
     const data = (rows as any[]).map(row => {
       const formatted = { ...row };
-      // Boolean convert from TINYINT (1/0)
       if ('is_active' in formatted) {
         formatted.is_active = Boolean(formatted.is_active);
+      }
+      // Parse field JSON jika belum berformat objek
+      if ('content' in formatted && typeof formatted.content === 'string') {
+        try {
+          formatted.content = JSON.parse(formatted.content);
+        } catch {}
+      }
+      if ('permissions' in formatted && typeof formatted.permissions === 'string') {
+        try {
+          formatted.permissions = JSON.parse(formatted.permissions);
+        } catch {}
       }
       return formatted;
     });

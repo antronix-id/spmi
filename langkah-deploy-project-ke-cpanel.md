@@ -1,17 +1,17 @@
-# Panduan Lengkap Deploy Proyek SPMI UNPAL ke cPanel (Node.js & PostgreSQL)
+# Panduan Lengkap Deploy Proyek SPMI UNPAL ke cPanel (Node.js & MySQL)
 
-Panduan ini berisi langkah-langkah teknis secara mendetail, sistematis, dan teruji untuk mendeploy aplikasi **Next.js (SPMI Universitas Palembang)** ke hosting **cPanel** menggunakan database **PostgreSQL**, konfigurasi domain/SSL, akses SSH, serta otomatisasi **CI/CD (GitHub Actions)**.
+Panduan ini berisi langkah-langkah teknis secara mendetail, sistematis, dan teruji untuk mendeploy aplikasi **Next.js (SPMI Universitas Palembang)** ke hosting **cPanel** menggunakan database **MySQL / MariaDB**, penyimpanan file lokal (`public/uploads`), konfigurasi domain/SSL, serta manajemen proses Node.js.
 
 ---
 
 ## 📑 Daftar Isi
 1. [Prasyarat Hosting cPanel](#1-prasyarat-hosting-cpanel)
-2. [Konfigurasi Database PostgreSQL di cPanel](#2-konfigurasi-database-postgresql-di-cpanel)
-3. [Inisialisasi Skema & Data Database (Auto Push)](#3-inisialisasi-skema--data-database-auto-push)
+2. [Konfigurasi Database MySQL di cPanel](#2-konfigurasi-database-mysql-di-cpanel)
+3. [Import Skema & Data Seed ke MySQL cPanel](#3-import-skema--data-seed-ke-mysql-cpanel)
 4. [Konfigurasi "Setup Node.js App" di cPanel](#4-konfigurasi-setup-nodejs-app-di-cpanel)
-5. [Build dan Upload Proyek ke cPanel](#5-build-dan-upload-proyek-ke-cpanel)
-6. [Konfigurasi Domain, SSL, dan .htaccess](#6-konfigurasi-domain-ssl-dan-htaccess)
-7. [Otomatisasi CI/CD dengan GitHub Actions (Auto Deploy)](#7-otomatisasi-cicd-dengan-github-actions-auto-deploy)
+5. [Build dan Upload Berkas Proyek ke cPanel](#5-build-dan-upload-berkas-proyek-ke-cpanel)
+6. [Konfigurasi File Manager & Direktori Upload](#6-konfigurasi-file-manager--direktori-upload)
+7. [Konfigurasi Domain, SSL, dan .htaccess](#7-konfigurasi-domain-ssl-dan-htaccess)
 8. [Panduan Maintenance & Troubleshooting](#8-panduan-maintenance--troubleshooting)
 
 ---
@@ -19,20 +19,20 @@ Panduan ini berisi langkah-langkah teknis secara mendetail, sistematis, dan teru
 ## 1. Prasyarat Hosting cPanel
 
 Pastikan akun hosting cPanel Anda memiliki fitur-fitur berikut:
-- **Setup Node.js App** (CloudLinux / cPanel Application Manager) dengan versi Node.js **20.x** atau **18.x**.
-- **PostgreSQL Databases** & **phpPgAdmin**.
-- **Terminal** atau **SSH Access** aktif.
+- **Setup Node.js App** (CloudLinux / cPanel Application Manager) dengan versi Node.js **20.x** (atau minimal 18.x).
+- **MySQL Databases** & **phpMyAdmin**.
+- **File Manager** (atau akses Terminal / SSH / FTP).
 - **SSL / TLS** (AutoSSL / Let's Encrypt).
 
 ---
 
-## 2. Konfigurasi Database PostgreSQL di cPanel
+## 2. Konfigurasi Database MySQL di cPanel
 
-### Langkah 2.1: Membuat Database & User PostgreSQL
+### Langkah 2.1: Membuat Database & User MySQL
 1. Login ke **cPanel**.
-2. Masuk ke menu **PostgreSQL Databases** (atau **PostgreSQL Database Wizard**).
+2. Masuk ke menu **MySQL Databases** (atau **MySQL Database Wizard**).
 3. **Buat Database Baru**:
-   - Masukkan nama database, contoh: `spmi_db` (nama lengkap menjadi `usernamecpanel_spmi_db`).
+   - Masukkan nama database, contoh: `spmi` (nama lengkap otomatis menjadi `usernamecpanel_spmi`).
 4. **Buat User Database**:
    - Masukkan nama user, contoh: `spmi_user` (nama lengkap menjadi `usernamecpanel_spmi_user`).
    - Buat password yang kuat dan catat (contoh: `P@ssw0rdSpmi2026!`).
@@ -42,43 +42,36 @@ Pastikan akun hosting cPanel Anda memiliki fitur-fitur berikut:
 
 ### Langkah 2.2: Catat Parameter Koneksi Database
 - **Host**: `localhost` atau `127.0.0.1` (karena web app & DB berada di server cPanel yang sama).
-- **Port**: `5432`
-- **Database Name**: `usernamecpanel_spmi_db`
+- **Port**: `3306`
+- **Database Name**: `usernamecpanel_spmi`
 - **User**: `usernamecpanel_spmi_user`
 - **Password**: `P@ssw0rdSpmi2026!`
 
 Format Connection String URL:
 ```text
-DATABASE_URL="postgresql://usernamecpanel_spmi_user:P@ssw0rdSpmi2026!@localhost:5432/usernamecpanel_spmi_db"
+DATABASE_URL="mysql://usernamecpanel_spmi_user:P@ssw0rdSpmi2026!@localhost:3306/usernamecpanel_spmi"
 ```
 
 ---
 
-## 3. Inisialisasi Skema & Data Database (Auto Push)
+## 3. Import Skema & Data Seed ke MySQL cPanel
 
-Anda tidak perlu membuat tabel satu per satu secara manual. File `src/lib/skema_database.ts` telah disiapkan untuk membuat 8 tabel sekaligus dan langsung mengunggah data aktif dari Supabase.
+Tersedia file SQL yang memuat seluruh DDL (9 tabel) dan data riil: **`mysql-schema-and-seed.sql`**.
 
-### Cara 1: Menjalankan via Terminal / SSH cPanel (Direkomendasikan)
-1. Buka menu **Terminal** di cPanel.
-2. Masuk ke direktori proyek aplikasi Anda:
-   ```bash
-   cd ~/spmi-app
-   ```
-3. Set environment variable database sementara atau isi di file `.env.production`:
-   ```bash
-   export DATABASE_URL="postgresql://usernamecpanel_spmi_user:P@ssw0rdSpmi2026!@localhost:5432/usernamecpanel_spmi_db"
-   ```
-4. Jalankan script push database:
-   ```bash
-   npm run db:push
-   ```
-   *Output akan menampilkan status pembuatan 8 tabel dan seluruh data yang berhasil di-push.*
+### Cara 1: Import via phpMyAdmin (Paling Mudah)
+1. Di cPanel, buka menu **phpMyAdmin**.
+2. Pada panel sebelah kiri, klik nama database Anda (contoh: `usernamecpanel_spmi`).
+3. Klik tab **Import** di menu bagian atas.
+4. Klik tombol **Choose File** / **Pilih Berkas**, lalu pilih file **`mysql-schema-and-seed.sql`** dari komputer Anda.
+5. Gulir ke bawah dan klik tombol **Import** (atau **Kirim / Go**).
+6. Tunggu hingga muncul notifikasi hijau bertuliskan *"Import has been successfully finished"*.
+7. Pastikan seluruh 9 tabel (`accreditations`, `documents`, `document_access_keys`, `monitoring_data`, `regulations`, `contact_messages`, `org_members`, `pages_content`, `users_admin`) telah terisi.
 
-### Cara 2: Import via phpPgAdmin (Alternatif)
-Jika tidak menggunakan terminal:
-1. Buka file [supabase-schema.sql](file:///c:/Rianpedia_Project/spmi/supabase-schema.sql) di komputer Anda.
-2. Buka menu **phpPgAdmin** di cPanel -> pilih database Anda.
-3. Masuk ke tab **SQL**, paste seluruh isi `supabase-schema.sql`, lalu klik **Execute**.
+### Cara 2: Menjalankan via Terminal / SSH cPanel
+Jika Anda memiliki akses Terminal cPanel:
+```bash
+mysql -u usernamecpanel_spmi_user -p usernamecpanel_spmi < mysql-schema-and-seed.sql
+```
 
 ---
 
@@ -87,68 +80,86 @@ Jika tidak menggunakan terminal:
 1. Di cPanel, cari dan klik menu **Setup Node.js App**.
 2. Klik tombol **Create Application**.
 3. Isi formulir konfigurasi berikut:
-   - **Node.js version**: Pilih `20.x` (atau versi LTS terbaru).
+   - **Node.js version**: Pilih `20.x` (disarankan).
    - **Application mode**: `Production`
-   - **Application root**: `spmi-app` (folder tempat source code berada di home direktori).
-   - **Application URL**: Pilih domain atau subdomain Anda (misal: `spmi.unpal.ac.id` atau `unpal.ac.id`).
-   - **Application startup file**: `server.js`
+   - **Application root**: `spmi-app` (folder tempat source code berada di home direktori `/home/username/spmi-app`).
+   - **Application URL**: Pilih domain atau subdomain Anda (misal: `spmi.unpal.ac.id`).
+   - **Application startup file**: `server.js` (file ini sudah tersedia di root proyek).
 4. **Environment Variables**:
-   Tambahkan variabel lingkungan berikut satu per satu:
+   Tambahkan variabel lingkungan berikut di bagian **Environment variables** (atau gunakan file `.env`):
    - `NODE_ENV` = `production`
    - `PORT` = `3000`
-   - `DATABASE_URL` = `postgresql://usernamecpanel_spmi_user:P@ssw0rdSpmi2026!@localhost:5432/usernamecpanel_spmi_db`
-   - `NEXT_PUBLIC_SUPABASE_URL` = `https://nuqlneeiloedqklrwlgo.supabase.co`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
-   - `SUPABASE_SERVICE_ROLE_KEY` = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+   - `MYSQL_HOST` = `localhost`
+   - `MYSQL_PORT` = `3306`
+   - `MYSQL_USER` = `usernamecpanel_spmi_user`
+   - `MYSQL_PASSWORD` = `P@ssw0rdSpmi2026!`
+   - `MYSQL_DATABASE` = `usernamecpanel_spmi`
+   - `DATABASE_URL` = `mysql://usernamecpanel_spmi_user:P@ssw0rdSpmi2026!@localhost:3306/usernamecpanel_spmi`
+   - `NEXT_PUBLIC_APP_URL` = `https://spmi.unpal.ac.id`
 5. Klik **Create** di pojok kanan atas.
 6. Catat baris perintah virtual environment yang muncul di bagian atas halaman (contoh: `source /home/username/nodevenv/spmi-app/20/bin/activate && cd /home/username/spmi-app`).
 
 ---
 
-## 5. Build dan Upload Proyek ke cPanel
+## 5. Build dan Upload Berkas Proyek ke cPanel
 
-Karena Next.js telah dikonfigurasikan dengan mode `standalone` pada `next.config.js`, proses deploy sangat ringan dan hemat memori server.
+Proyek telah dioptimalkan dengan Next.js mode **standalone** dan startup script `server.js`.
 
-### Langkah 5.1: Build di Lokal
-Jalankan di komputer lokal Anda:
+### Langkah 5.1: Build & Kemas Otomatis (1-Click Packaging)
+Kami telah menyediakan perintah otomatis untuk mem-build dan mengompres berkas-berkas esensial menjadi zip siap upload:
 ```bash
-npm run build
+npm run package:cpanel
 ```
-Setelah proses build selesai, Next.js menghasilkan folder `.next/standalone`.
+Perintah ini otomatis menghasilkan berkas:
+👉 **`spmi-cpanel-ready.zip`** di folder root proyek (ukuran ~108 MB, sudah mencakup seluruh berkas dokumen & gambar di `public/uploads`, skema SQL, serta build `.next` yang telah dibersihkan dari cache).
 
-### Langkah 5.2: Struktur File yang Diupload ke cPanel
-Upload file & folder berikut ke dalam folder root aplikasi di cPanel (`/home/username/spmi-app/`):
+### Langkah 5.2: Upload & Ekstrak di cPanel
+1. Buka **File Manager** cPanel.
+2. Masuk ke direktori aplikasi Anda: `/home/username/spmi-app/`.
+3. Klik tombol **Upload** di bagian atas, lalu pilih file **`spmi-cpanel-ready.zip`**.
+4. Setelah selesai diupload, klik kanan berkas `spmi-cpanel-ready.zip` di cPanel File Manager lalu pilih **Extract**.
+5. Salin isi berkas `.env.cpanel` menjadi file bernama `.env` di folder `/home/username/spmi-app/`, lalu sesuaikan kredensial database cPanel Anda.
 
+Struktur berkas di cPanel Anda akan menjadi seperti berikut:
 ```text
 /home/username/spmi-app/
 ├── .next/
-│   ├── standalone/        <-- Seluruh isi folder standalone
-│   └── static/            <-- Copy folder static ke .next/static
-├── public/                <-- Folder public (gambar, favicon, logo)
-├── src/                   <-- Folder source (opsional untuk db:push)
+├── public/
+│   └── uploads/             <-- Seluruh dokumen & gambar PDF/PNG lokal
+├── src/                     <-- Source code aplikasi
 ├── package.json
-├── server.js              <-- File runner utama (dibuat otomatis oleh standalone)
-└── .env.production / .env
+├── package-lock.json
+├── next.config.js
+├── server.js                <-- Startup file resmi cPanel
+├── .htaccess                <-- File reverse proxy cPanel
+└── .env                     <-- Salinan konfigurasi dari .env.cpanel
 ```
 
-> **Catatan Teknis Penting**:
-> Folder `.next/standalone` memiliki file `server.js`. Salin seluruh isi dari `.next/standalone` ke root direktori `/home/username/spmi-app/`, lalu pastikan folder `.next/static` disalin ke `/home/username/spmi-app/.next/static` dan folder `public` disalin ke `/home/username/spmi-app/public`.
-
-### Langkah 5.3: Jalankan Aplikasi di cPanel
-1. Buka kembali menu **Setup Node.js App** di cPanel.
-2. Klik tombol **Run NPM Install** (jika diperlukan).
-3. Klik tombol **Restart Application**.
+### Langkah 5.3: Instalasi Dependensi di cPanel
+1. Buka menu **Setup Node.js App** di cPanel.
+2. Klik nama aplikasi Anda.
+3. Klik tombol **Run NPM Install** (atau buka menu **Terminal** cPanel dan jalankan `npm install --omit=dev`).
+4. Klik tombol **Restart Application**.
 
 ---
 
-## 6. Konfigurasi Domain, SSL, dan .htaccess
+## 6. Konfigurasi File Manager & Direktori Upload
 
-Untuk memastikan domain langsung mengarah ke aplikasi Node.js dengan HTTPS otomatis:
+Aplikasi SPMI UNPAL menyimpan berkas secara lokal di folder `public/uploads/`.
+1. Pastikan folder `/home/username/spmi-app/public/uploads` memiliki permission **755** agar file dapat dibaca oleh publik dan ditulis oleh aplikasi Node.js.
+2. File pengaman `public/uploads/.htaccess` telah otomatis melindungi direktori ini dari eksekusi script berbahaya (`.php`, `.exe`).
 
-### File `.htaccess` pada `public_html` atau Document Root Subdomain:
-Buat / edit file `.htaccess` pada folder public domain Anda:
+---
+
+## 7. Konfigurasi Domain, SSL, dan .htaccess
+
+Pastikan file `.htaccess` di root direktori domain Anda (atau di `public_html`) memiliki konfigurasi reverse proxy:
 
 ```apache
+# =========================================================
+# HTACCESS REVERSE PROXY NEXT.JS CPANEL
+# =========================================================
+
 RewriteEngine On
 
 # 1. Paksa Redirect HTTPS
@@ -160,125 +171,21 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ http://127.0.0.1:3000/$1 [P,L]
 
-# Header Keamanan
+# 3. Header Keamanan
 Header always set X-Frame-Options "SAMEORIGIN"
 Header always set X-Content-Type-Options "nosniff"
 ```
 
-### Pasang SSL (HTTPS Gratis):
-1. Masuk ke cPanel -> menu **SSL/TLS Status**.
-2. Centang domain / subdomain proyek Anda.
-3. Klik **Run AutoSSL** dan tunggu hingga sertifikat aktif (ikon gembok hijau).
-
----
-
-## 7. Otomatisasi CI/CD dengan GitHub Actions (Auto Deploy)
-
-Dengan CI/CD, setiap kali Anda melakukan `git push` ke branch `main`, GitHub Actions akan otomatis melakukan build dan deploy ke cPanel tanpa upload manual.
-
-### Langkah 7.1: Buat SSH Key di Komputer / cPanel
-1. Buka Terminal cPanel -> menu **SSH Access** -> **Manage SSH Keys**.
-2. Klik **Generate a New Key**:
-   - Key Name: `github_deploy_key`
-   - Password: *kosongkan*
-   - Key Size: `4096`
-3. Klik **Authorize** pada public key yang baru dibuat.
-4. Klik **View/Download** pada Private Key -> Copy seluruh teks private key (termasuk `-----BEGIN RSA PRIVATE KEY-----`).
-
-### Langkah 7.2: Tambahkan Secret di GitHub Repository
-1. Buka repositori GitHub Anda -> **Settings** -> **Secrets and variables** -> **Actions**.
-2. Tambahkan **Repository Secrets** berikut:
-   - `CPANEL_HOST`: IP server hosting atau domain (contoh: `spmi.unpal.ac.id` atau IP server).
-   - `CPANEL_PORT`: Port SSH (biasanya `22` atau port custom hosting seperti `2222`).
-   - `CPANEL_USERNAME`: Username akun cPanel Anda.
-   - `CPANEL_SSH_KEY`: Paste isi Private Key SSH tadi.
-   - `CPANEL_APP_DIR`: Path folder aplikasi di server (contoh: `/home/usernamecpanel/spmi-app`).
-
-### Langkah 7.3: Buat File Workflow GitHub Actions
-Buat file di repositori lokal Anda: `.github/workflows/deploy.yml`
-
-```yaml
-name: Deploy Next.js to cPanel
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: 📥 Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: 🟢 Setup Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: 📦 Install Dependencies
-        run: npm ci
-
-      - name: 🛠️ Build Next.js (Standalone Mode)
-        env:
-          NEXT_TELEMETRY_DISABLED: 1
-          NODE_ENV: production
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-        run: npm run build
-
-      - name: 🚚 Deploy to cPanel via SSH & Rsync
-        uses: easingthemes/ssh-deploy@v5.0.0
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.CPANEL_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.CPANEL_HOST }}
-          REMOTE_PORT: ${{ secrets.CPANEL_PORT }}
-          REMOTE_USER: ${{ secrets.CPANEL_USERNAME }}
-          TARGET: ${{ secrets.CPANEL_APP_DIR }}
-          SOURCE: ".next/standalone/ .next/static public package.json"
-          EXCLUDE: "/node_modules/, /.git/"
-
-      - name: 🔄 Restart Node.js Application on cPanel
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.CPANEL_HOST }}
-          port: ${{ secrets.CPANEL_PORT }}
-          username: ${{ secrets.CPANEL_USERNAME }}
-          key: ${{ secrets.CPANEL_SSH_KEY }}
-          script: |
-            cd ${{ secrets.CPANEL_APP_DIR }}
-            mkdir -p .next/static
-            cp -r static/* .next/static/ 2>/dev/null || true
-            touch tmp/restart.txt
-```
+Pastikan SSL (Let's Encrypt / AutoSSL) aktif pada domain/subdomain Anda melalui menu **SSL/TLS Status** di cPanel.
 
 ---
 
 ## 8. Panduan Maintenance & Troubleshooting
 
-### 1. Cara Restart Aplikasi:
-- **Via cPanel**: Buka **Setup Node.js App** -> Klik tombol **Restart**.
-- **Via Terminal / SSH**:
-  ```bash
-  mkdir -p ~/spmi-app/tmp && touch ~/spmi-app/tmp/restart.txt
-  ```
-
-### 2. Memeriksa Error Log:
-- Jika aplikasi tidak terbuka, periksa log di:
-  ```bash
-  cat ~/spmi-app/stderr.log
-  # atau
-  cat ~/spmi-app/stdout.log
-  ```
-
-### 3. Masalah Koneksi Database PostgreSQL:
-- Pastikan hostname database di cPanel menggunakan `localhost` atau `127.0.0.1`.
-- Pastikan User database telah diberikan `ALL PRIVILEGES` ke database yang dituju.
-- Jalankan `npm run db:push` untuk memverifikasi koneksi dan data.
-
----
-
-🎉 **Selamat! Aplikasi SPMI Universitas Palembang kini telah berhasil terdeploy secara profesional di cPanel dengan arsitektur modern, aman, dan terotomatisasi.**
+| Gejala Error | Kemungkinan Penyebab | Solusi |
+|:---|:---|:---|
+| **503 Service Unavailable** | Node.js app belum berjalan / crash | Buka menu *Setup Node.js App* -> klik *Restart Application*. Periksa log error di menu terminal. |
+| **500 Internal Server Error** | Kredensial MySQL salah atau port DB terblokir | Pastikan user database memiliki ALL PRIVILEGES pada database, cek kecocokan password di `.env`. |
+| **File PDF / Gambar 404** | Folder `public/uploads` belum ter-copy | Pastikan folder `public/uploads` dan seluruh subfoldernya sudah diekstrak ke cPanel. |
+| **Gagal Login Admin** | Akun belum masuk ke database | Pastikan file `mysql-schema-and-seed.sql` sudah di-import lengkap ke MySQL phpMyAdmin. |
+| **Perubahan Kode Tidak Tampil** | Cache Next.js / Server belum direstart | Jalankan `npm run build` ulang, lalu klik *Restart* di menu *Setup Node.js App*. |
