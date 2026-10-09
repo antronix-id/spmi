@@ -187,7 +187,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium text-slate-600">
           <p>
-            &copy; {new Date().getFullYear()} Sistem Penjaminan Mutu Internal (SPMI) {contact.institution_name || 'Universitas Palembang'}. Hak Cipta Dilindungi.
+            &copy; {new Date().getFullYear()} Sistem Penjaminan Mutu Internal (SPMI) {contact.institution_name || 'Universitas Palembang'}. Hak Cipta Dilindungi. By Jemi Arian
           </p>
           <div className="flex items-center gap-4">
             <Link href="/kontak" className="hover:text-black font-bold transition-colors">
